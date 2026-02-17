@@ -108,7 +108,6 @@ export const deleteBrand = async (req, res, next) => {
 
 export const getBrandAssets = async (req, res, next) => {
     try {
-        // Path to the brands images folder in the frontend public directory
         const brandsPath = path.join(__dirname, '../../../frontend/public/images/brands');
 
         if (!fs.existsSync(brandsPath)) {

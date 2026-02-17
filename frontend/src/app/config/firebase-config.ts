@@ -65,9 +65,29 @@ export async function requestNotificationToken(): Promise<string | null> {
             return null;
         }
 
-        // Get FCM token
-        const token = await getToken(messagingInstance, { vapidKey });
-        console.log('✅ FCM token obtained');
+        // Create config query string for the service worker
+        const swConfigParams = new URLSearchParams({
+            apiKey: firebaseConfig.apiKey || '',
+            authDomain: firebaseConfig.authDomain || '',
+            projectId: firebaseConfig.projectId || '',
+            storageBucket: firebaseConfig.storageBucket || '',
+            messagingSenderId: firebaseConfig.messagingSenderId || '',
+            appId: firebaseConfig.appId || '',
+            measurementId: firebaseConfig.measurementId || ''
+        }).toString();
+
+        // Register service worker manually with config params
+        const registration = await navigator.serviceWorker.register(
+            `/firebase-messaging-sw.js?${swConfigParams}`
+        );
+
+        // Get FCM token using the manual registration
+        const token = await getToken(messagingInstance, {
+            vapidKey,
+            serviceWorkerRegistration: registration
+        });
+
+        console.log('✅ FCM token obtained with custom registration');
         return token;
     } catch (error) {
         console.error('Error getting FCM token:', error);

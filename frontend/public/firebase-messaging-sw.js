@@ -5,15 +5,25 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
 // Initialize Firebase in the service worker
-firebase.initializeApp({
-    apiKey: "AIzaSyCT6Bi2ThkIjZxD06mJMqmzIMRWqOwZ3_0",
-    authDomain: "smstyre-9d9a6.firebaseapp.com",
-    projectId: "smstyre-9d9a6",
-    storageBucket: "smstyre-9d9a6.firebasestorage.app",
-    messagingSenderId: "718982252167",
-    appId: "1:718982252167:web:b73dd1ae7205406ed19a22",
-    measurementId: "G-JXNWVYBVLW"
-});
+// Initialize Firebase in the service worker
+// The configuration is passed via query parameters during registration
+const urlParams = new URLSearchParams(location.search);
+const firebaseConfig = {
+    apiKey: urlParams.get('apiKey'),
+    authDomain: urlParams.get('authDomain'),
+    projectId: urlParams.get('projectId'),
+    storageBucket: urlParams.get('storageBucket'),
+    messagingSenderId: urlParams.get('messagingSenderId'),
+    appId: urlParams.get('appId'),
+    measurementId: urlParams.get('measurementId')
+};
+
+if (firebaseConfig.apiKey) {
+    firebase.initializeApp(firebaseConfig);
+} else {
+    // Fallback if no params (should not happen if registered correctly)
+    console.warn('[firebase-messaging-sw.js] No config found in URL parameters');
+}
 
 // Retrieve an instance of Firebase Messaging
 const messaging = firebase.messaging();
