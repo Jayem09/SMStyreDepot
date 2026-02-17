@@ -1,4 +1,4 @@
-import { ShoppingCart, Search, Menu, User, LogOut, ChevronDown } from "lucide-react";
+import { ShoppingCart, Search, Menu, User, LogOut, ChevronDown, Heart } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useCartStore } from "../stores/cartStore";
@@ -114,6 +114,14 @@ export function Header() {
                       Dashboard
                     </Link>
                     <Link
+                      to="/wishlist"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <Heart className="w-4 h-4" />
+                      My Wishlist
+                    </Link>
+                    <Link
                       to="/orders"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                       onClick={() => setUserMenuOpen(false)}
@@ -215,6 +223,16 @@ export function Header() {
                 Contact
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/wishlist"
+                className={({ isActive }) =>
+                  `transition-colors font-medium ${isActive ? 'text-blue-600' : 'text-slate-700 hover:text-blue-600'}`
+                }
+              >
+                Wishlist
+              </NavLink>
+            </li>
           </ul>
         </nav>
 
@@ -230,7 +248,7 @@ export function Header() {
               />
             </div>
             <ul className="space-y-1 text-sm">
-              {["/", "/products", "/services", "/brands", "/contact"].map(
+              {["/", "/products", "/services", "/brands", "/contact", "/wishlist"].map(
                 (path, idx) => (
                   <li key={idx}>
                     <Link
@@ -238,7 +256,7 @@ export function Header() {
                       className="block py-2 px-2 text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-lg transition-colors font-medium"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {["Home", "Shop Tyres", "Services", "Brands", "Contact"][
+                      {["Home", "Shop Tyres", "Services", "Brands", "Contact", "Wishlist"][
                         idx
                       ]}
                     </Link>

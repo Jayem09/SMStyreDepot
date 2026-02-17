@@ -20,6 +20,7 @@ const AdminRoute = lazy(() => import("../app/components/admin/AdminRoute").then(
 const UserDashboard = lazy(() => import("../app/components/dashboard/UserDashboard").then(m => ({ default: m.UserDashboard })));
 const OrdersPage = lazy(() => import("../app/components/OrdersPage").then(m => ({ default: m.OrdersPage })));
 const ProfilePage = lazy(() => import("../app/components/ProfilePage").then(m => ({ default: m.ProfilePage })));
+const WishlistPage = lazy(() => import("../app/components/WishlistPage").then(m => ({ default: m.WishlistPage })));
 
 export const router = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
   {
     path: "/profile",
     Component: ProfilePage,
+  },
+  {
+    path: "/wishlist",
+    Component: WishlistPage,
   },
   {
     path: "/admin",

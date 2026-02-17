@@ -75,13 +75,15 @@ export async function requestNotificationToken(): Promise<string | null> {
             appId: firebaseConfig.appId || '',
             measurementId: firebaseConfig.measurementId || ''
         }).toString();
-
-        // Register service worker manually with config params
-        const registration = await navigator.serviceWorker.register(
+        await navigator.serviceWorker.register(
             `/firebase-messaging-sw.js?${swConfigParams}`
         );
+        const registration = await navigator.serviceWorker.ready;
 
-        // Get FCM token using the manual registration
+        if (!registration.pushManager) {
+            console.error('❌ Push Manager not available on registration. Browser might not support Push API in this context.');
+            return null;
+        }
         const token = await getToken(messagingInstance, {
             vapidKey,
             serviceWorkerRegistration: registration

@@ -19,6 +19,7 @@ import appointmentRoutes from './routes/appointmentRoutes.js';
 import vehicleRoutes from './routes/vehicleRoutes.js';
 import seoRoutes from './routes/seoRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
 
 
 dotenv.config();
@@ -54,6 +55,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 // Root level SEO routes
 app.use('/', seoRoutes);

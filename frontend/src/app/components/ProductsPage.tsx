@@ -3,10 +3,12 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { SEO } from "./SEO";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { ShoppingCart, Filter, Loader2, BarChart2 } from "lucide-react";
+import { ShoppingCart, Filter, Loader2, BarChart2, Heart } from "lucide-react";
 import { useCartStore } from "../stores/cartStore";
 import { useProductStore } from "../stores/productStore";
 import { useComparisonStore } from "../stores/comparisonStore";
+import { useWishlistStore } from "../stores/wishlistStore";
+import { useAuthStore } from "../stores/authStore";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ScrollAnimation } from "./ui/ScrollAnimation";
@@ -35,6 +37,8 @@ const types = ["All Types", "Summer", "All-Season", "Winter"];
 
 export function ProductsPage() {
   const { addToComparison, removeFromComparison, isInComparison } = useComparisonStore();
+  const { toggleWishlist, isInWishlist, fetchWishlist } = useWishlistStore();
+  const { isAuthenticated, token } = useAuthStore();
   useDocumentTitle("Shop Tyres & Magwheels");
   const [products, setProductsState] = useState<Product[]>([]);
   const [brands, setBrands] = useState<string[]>(["All Brands"]);
@@ -98,6 +102,13 @@ export function ProductsPage() {
       setLoading(false);
     }
   };
+
+  // Fetch wishlist if authenticated
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      fetchWishlist(token);
+    }
+  }, [isAuthenticated, token, fetchWishlist]);
 
   // Update filters in store
   useEffect(() => {
@@ -392,6 +403,25 @@ export function ProductsPage() {
                                 </span>
                                 <BarChart2 className="w-4 h-4" />
                               </div>
+                            </button>
+
+                            {/* Wishlist Toggle */}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (!isAuthenticated) {
+                                  toast.error("Please login to use wishlist");
+                                  return;
+                                }
+                                if (token) toggleWishlist(String(product.id), token);
+                              }}
+                              className={`absolute top-12 right-2 p-2 rounded-lg backdrop-blur-md transition-all z-10 ${isInWishlist(String(product.id))
+                                ? "bg-rose-500 text-white shadow-lg"
+                                : "bg-white/80 text-rose-400 hover:text-rose-600 shadow-sm"
+                                }`}
+                            >
+                              <Heart className={`w-4 h-4 ${isInWishlist(String(product.id)) ? "fill-current" : ""}`} />
                             </button>
                           </div>
                           <div className="p-3 flex flex-col flex-grow">

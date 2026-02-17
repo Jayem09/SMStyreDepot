@@ -2,7 +2,8 @@ import express from 'express';
 import {
     getProducts,
     getProduct,
-    searchProducts
+    searchProducts,
+    getRelatedProducts
 } from '../controllers/productController.js';
 import { getBrands } from '../controllers/brandController.js';
 import { getSizes } from '../controllers/sizeController.js';
@@ -14,5 +15,6 @@ router.get('/search', searchProducts);
 router.get('/brands', getBrands);
 router.get('/sizes', getSizes);
 router.get('/:id', getProduct);
+router.get('/:id/related', getRelatedProducts);
 
 export default router;

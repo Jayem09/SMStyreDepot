@@ -12,6 +12,7 @@ export interface Product {
     image_url?: string;
     image_urls?: string[];
     description?: string;
+    warranty?: string;
     is_featured?: boolean;
 }
 
@@ -26,12 +27,16 @@ interface ProductStore {
         minPrice?: number;
         maxPrice?: number;
     };
+    relatedProducts: Product[];
     setProducts: (products: Product[]) => void;
     setSelectedProduct: (product: Product | null) => void;
     setSearchQuery: (query: string) => void;
     setFilters: (filters: Partial<ProductStore['filters']>) => void;
     getFilteredProducts: () => Product[];
+    fetchRelatedProducts: (productId: number) => Promise<void>;
 }
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const useProductStore = create<ProductStore>((set, get) => ({
     products: [],
@@ -42,6 +47,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
         size: 'All Sizes',
         type: 'All Types',
     },
+    relatedProducts: [],
     setProducts: (products) => set({ products }),
     setSelectedProduct: (product) => set({ selectedProduct: product }),
     setSearchQuery: (query) => set({ searchQuery: query }),
@@ -89,5 +95,16 @@ export const useProductStore = create<ProductStore>((set, get) => ({
         }
 
         return filtered;
+    },
+    fetchRelatedProducts: async (productId) => {
+        try {
+            const response = await fetch(`${API_URL}/api/products/${productId}/related`);
+            if (!response.ok) throw new Error('Failed to fetch related products');
+            const data = await response.json();
+            set({ relatedProducts: data.products || [] });
+        } catch (error) {
+            console.error('Error fetching related products:', error);
+            set({ relatedProducts: [] });
+        }
     },
 }));

@@ -157,3 +157,48 @@ export const searchProducts = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getRelatedProducts = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Get current product details
+    const { data: product, error: productError } = await supabase
+      .from('products')
+      .select('brand, size')
+      .eq('id', id)
+      .single();
+
+    if (productError || !product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // 2. Fetch products with same size OR brand, excluding current product
+    // We prioritize size matches in our logic later
+    const { data: related, error: relatedError } = await supabase
+      .from('products')
+      .select('*')
+      .or(`size.eq.${product.size},brand.eq.${product.brand}`)
+      .neq('id', id)
+      .limit(10);
+
+    if (relatedError) {
+      throw relatedError;
+    }
+
+    // 3. Sort by relevance: Size matches first, then brand matches
+    const sortedRelated = (related || []).sort((a, b) => {
+      const aSizeMatch = a.size === product.size;
+      const bSizeMatch = b.size === product.size;
+
+      if (aSizeMatch && !bSizeMatch) return -1;
+      if (!aSizeMatch && bSizeMatch) return 1;
+      return 0;
+    }).slice(0, 5); // Limit to top 5
+
+    res.json({ products: sortedRelated });
+  } catch (error) {
+    console.error('❌ GetRelatedProducts Error:', error);
+    next(error);
+  }
+};

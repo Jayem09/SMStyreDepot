@@ -5,10 +5,12 @@ import { SEO } from "./SEO";
 import { StructuredData } from "./StructuredData";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useParams, Link, useNavigate } from "react-router";
-import { ArrowLeft, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ChevronLeft, ChevronRight, CheckCircle2, ChevronDown, Loader2, Heart, ShieldCheck } from "lucide-react";
 import { useProductStore } from "../stores/productStore";
 import { useCartStore } from "../stores/cartStore";
 import { useReviewStore } from "../stores/reviewStore";
+import { useWishlistStore } from "../stores/wishlistStore";
+import { useAuthStore } from "../stores/authStore";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { RatingStars } from "./ui/RatingStars";
@@ -17,9 +19,11 @@ import { ReviewSection } from "./ReviewSection";
 export function ProductDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const products = useProductStore((state) => state.products);
+    const { products, relatedProducts, fetchRelatedProducts } = useProductStore();
     const addItem = useCartStore((state) => state.addItem);
     const { reviews, fetchProductReviews } = useReviewStore();
+    const { toggleWishlist, isInWishlist } = useWishlistStore();
+    const { isAuthenticated, token } = useAuthStore();
 
     const [quantity, setQuantity] = useState(1);
     const [isAdding, setIsAdding] = useState(false);
@@ -43,9 +47,10 @@ export function ProductDetailPage() {
         }
         if (product) {
             fetchProductReviews(product.id);
+            fetchRelatedProducts(product.id);
         }
         window.scrollTo(0, 0);
-    }, [product, products, navigate, fetchProductReviews]);
+    }, [product, products, navigate, fetchProductReviews, fetchRelatedProducts]);
 
     if (!product) {
         return (
@@ -53,7 +58,7 @@ export function ProductDetailPage() {
                 <Header />
                 <div className="container mx-auto px-4 py-32 text-center">
                     <Loader2 className="w-10 h-10 animate-spin mx-auto text-blue-600 mb-4" />
-                    <p className="text-slate-400 font-medium tracking-tight">Loading premium details...</p>
+                    <p className="text-slate-400 font-medium tracking-tight">Loading...</p>
                 </div>
                 <Footer />
             </div>
@@ -162,14 +167,16 @@ export function ProductDetailPage() {
                                     </div>
                                     <div className="flex items-center gap-3 text-slate-700">
                                         <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0" />
-                                        <span className="text-sm font-semibold">Size: {product.size}</span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-slate-700">
-                                        <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0" />
                                         <span className="text-sm font-semibold italic">
                                             Price: <span className="text-blue-600 font-bold">₱{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                                         </span>
                                     </div>
+                                    {product.warranty && (
+                                        <div className="flex items-center gap-3 text-slate-700 bg-blue-50/50 p-3 rounded-xl border border-blue-100/50">
+                                            <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0" />
+                                            <span className="text-sm font-bold text-blue-900">{product.warranty}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col gap-4 max-w-sm pt-4">
@@ -225,6 +232,24 @@ export function ProductDetailPage() {
                                         ) : (
                                             "ADD TO CART"
                                         )}
+                                    </button>
+
+                                    {/* Wishlist Toggle */}
+                                    <button
+                                        onClick={() => {
+                                            if (!isAuthenticated) {
+                                                toast.error("Please login to use wishlist");
+                                                return;
+                                            }
+                                            if (token) toggleWishlist(String(product.id), token);
+                                        }}
+                                        className={`flex items-center gap-2 px-6 h-14 rounded-xl font-bold text-xs tracking-widest transition-all border ${isInWishlist(String(product.id))
+                                            ? "bg-rose-50 border-rose-200 text-rose-600"
+                                            : "bg-white border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-100"
+                                            }`}
+                                    >
+                                        <Heart className={`w-5 h-5 ${isInWishlist(String(product.id)) ? "fill-current" : ""}`} />
+                                        {isInWishlist(String(product.id)) ? "SAVED TO WISHLIST" : "SAVE FOR LATER"}
                                     </button>
                                 </div>
                             </div>
@@ -285,9 +310,53 @@ export function ProductDetailPage() {
                     </div>
 
                     {/* Review Section */}
-                    <div className="w-full max-w-5xl">
+                    <div className="w-full max-w-5xl mb-20">
                         <ReviewSection productId={product.id} />
                     </div>
+
+                    {/* Related Products Section */}
+                    {relatedProducts.length > 0 && (
+                        <div className="w-full max-w-5xl mb-20">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <span className="text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px] block mb-2">CURATED FOR YOU</span>
+                                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">You might also like</h2>
+                                </div>
+                                <Link
+                                    to="/products"
+                                    className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors uppercase tracking-widest"
+                                >
+                                    View All
+                                </Link>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8">
+                                {relatedProducts.map((item) => (
+                                    <Link
+                                        key={item.id}
+                                        to={`/product/${item.id}`}
+                                        className="group bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all hover:-translate-y-1"
+                                    >
+                                        <div className="aspect-square bg-slate-50 rounded-xl mb-4 overflow-hidden flex items-center justify-center p-4">
+                                            <ImageWithFallback
+                                                src={item.image_url || "/images/tyres/default.jpg"}
+                                                alt={item.name}
+                                                className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <span className="text-[9px] font-black text-blue-600/60 uppercase tracking-widest block">{item.brand}</span>
+                                            <h3 className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors line-clamp-1">{item.name}</h3>
+                                            <p className="text-[10px] font-medium text-slate-400">{item.size}</p>
+                                            <div className="pt-2">
+                                                <span className="text-sm font-black text-slate-900">₱{item.price.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
 

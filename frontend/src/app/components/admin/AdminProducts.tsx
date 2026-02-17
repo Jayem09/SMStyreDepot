@@ -15,6 +15,7 @@ interface Product {
     image_urls?: string[];
     stock: number;
     rating: number;
+    warranty?: string;
     is_featured?: boolean;
 }
 
@@ -38,6 +39,7 @@ export function AdminProducts() {
         image_url: "",
         image_urls: [] as string[],
         stock: "",
+        warranty: "",
         is_featured: false,
     });
 
@@ -132,6 +134,7 @@ export function AdminProducts() {
             image_url: product.image_url || "",
             image_urls: urls,
             stock: product.stock.toString(),
+            warranty: product.warranty || "",
             is_featured: product.is_featured || false,
         });
         setImagePreviews(urls);
@@ -167,6 +170,7 @@ export function AdminProducts() {
             image_url: "",
             image_urls: [],
             stock: "",
+            warranty: "",
             is_featured: false,
         });
         setImagePreviews([]);
@@ -436,6 +440,16 @@ export function AdminProducts() {
                                         required
                                         value={formData.stock}
                                         onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Warranty Info</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. 5 Years Manufacturer Warranty"
+                                        value={formData.warranty}
+                                        onChange={(e) => setFormData({ ...formData, warranty: e.target.value })}
                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
