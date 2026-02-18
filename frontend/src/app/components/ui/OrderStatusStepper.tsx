@@ -46,7 +46,7 @@ export function OrderStatusStepper({ status }: { status: string }) {
     return (
         <div className="w-full py-4">
             <div className="relative flex justify-between">
-                {/* Progress Line */}
+                {}
                 <div className="absolute top-4 left-0 w-full h-0.5 bg-slate-100 -z-0">
                     <div
                         className="h-full bg-blue-600 transition-all duration-1000 ease-out"
@@ -78,7 +78,7 @@ export function OrderStatusStepper({ status }: { status: string }) {
                                 </span>
                             </div>
 
-                            {/* Tooltip on Hover */}
+                            {}
                             <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-2 py-1 rounded text-[8px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                                 {step.description}
                             </div>

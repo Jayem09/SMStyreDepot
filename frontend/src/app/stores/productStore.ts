@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { apiClient } from '../utils/apiClient';
 
 export interface Product {
     id: number;
@@ -36,7 +37,6 @@ interface ProductStore {
     fetchRelatedProducts: (productId: number) => Promise<void>;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const useProductStore = create<ProductStore>((set, get) => ({
     products: [],
@@ -59,7 +59,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
         const { products, searchQuery, filters } = get();
         let filtered = [...products];
 
-        // Search filter
+        
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(
@@ -71,22 +71,22 @@ export const useProductStore = create<ProductStore>((set, get) => ({
             );
         }
 
-        // Brand filter
+        
         if (filters.brand !== 'All Brands') {
             filtered = filtered.filter((product) => product.brand === filters.brand);
         }
 
-        // Size filter
+        
         if (filters.size !== 'All Sizes') {
             filtered = filtered.filter((product) => product.size === filters.size);
         }
 
-        // Type filter
+        
         if (filters.type !== 'All Types') {
             filtered = filtered.filter((product) => product.type === filters.type);
         }
 
-        // Price filter
+        
         if (filters.minPrice !== undefined) {
             filtered = filtered.filter((product) => product.price >= filters.minPrice!);
         }
@@ -98,9 +98,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     },
     fetchRelatedProducts: async (productId) => {
         try {
-            const response = await fetch(`${API_URL}/api/products/${productId}/related`);
-            if (!response.ok) throw new Error('Failed to fetch related products');
-            const data = await response.json();
+            const data = await apiClient.get<{ products: Product[] }>(`/api/products/${productId}/related`);
             set({ relatedProducts: data.products || [] });
         } catch (error) {
             console.error('Error fetching related products:', error);

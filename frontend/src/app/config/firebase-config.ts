@@ -11,16 +11,13 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Cloud Messaging
+
 let messaging: ReturnType<typeof getMessaging> | null = null;
 
-/**
- * Initialize Firebase Messaging
- * Only works in browsers that support service workers
- */
+
 export async function initializeMessaging() {
     try {
         const supported = await isSupported();
@@ -41,10 +38,7 @@ export async function initializeMessaging() {
     }
 }
 
-/**
- * Request FCM token for push notifications
- * @returns {Promise<string|null>} FCM token or null if failed
- */
+
 export async function requestNotificationToken(): Promise<string | null> {
     try {
         const messagingInstance = await initializeMessaging();
@@ -58,14 +52,14 @@ export async function requestNotificationToken(): Promise<string | null> {
             return null;
         }
 
-        // Request permission
+        
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
             console.log('ℹ️  Notification permission denied');
             return null;
         }
 
-        // Create config query string for the service worker
+        
         const swConfigParams = new URLSearchParams({
             apiKey: firebaseConfig.apiKey || '',
             authDomain: firebaseConfig.authDomain || '',
@@ -97,10 +91,7 @@ export async function requestNotificationToken(): Promise<string | null> {
     }
 }
 
-/**
- * Listen for foreground messages
- * @param {Function} callback - Callback function to handle messages
- */
+
 export function onForegroundMessage(callback: (payload: any) => void) {
     initializeMessaging().then((messagingInstance) => {
         if (!messagingInstance) return;
@@ -112,10 +103,7 @@ export function onForegroundMessage(callback: (payload: any) => void) {
     });
 }
 
-/**
- * Check if push notifications are supported
- * @returns {Promise<boolean>}
- */
+
 export async function isPushNotificationSupported(): Promise<boolean> {
     try {
         return await isSupported() && 'Notification' in window && 'serviceWorker' in navigator;

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { requestNotificationToken, onForegroundMessage, isPushNotificationSupported } from '../config/firebase-config';
+import { apiClient } from '../utils/apiClient';
 
 interface NotificationState {
     permission: NotificationPermission;
@@ -9,7 +10,7 @@ interface NotificationState {
     loading: boolean;
     error: string | null;
 
-    // Actions
+    
     checkSupport: () => Promise<void>;
     requestPermission: () => Promise<boolean>;
     subscribeToNotifications: (token: string) => Promise<void>;
@@ -17,7 +18,6 @@ interface NotificationState {
     initializeForegroundListener: () => void;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const useNotificationStore = create<NotificationState>((set, get) => ({
     permission: 'default',
@@ -27,9 +27,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     loading: false,
     error: null,
 
-    /**
-     * Check if push notifications are supported in this browser
-     */
+    
     checkSupport: async () => {
         const supported = await isPushNotificationSupported();
         set({ isSupported: supported });
@@ -39,14 +37,12 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
         }
     },
 
-    /**
-     * Request notification permission and get FCM token
-     */
+    
     requestPermission: async () => {
         set({ loading: true, error: null });
 
         try {
-            // Check if already granted
+            
             if (Notification.permission === 'granted') {
                 const token = await requestNotificationToken();
                 if (token) {
@@ -55,7 +51,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
                 }
             }
 
-            // Request permission
+            
             const token = await requestNotificationToken();
 
             if (token) {
@@ -83,10 +79,8 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
         }
     },
 
-    /**
-     * Subscribe to push notifications (save token to backend)
-     */
-    subscribeToNotifications: async (authToken: string) => {
+    
+    subscribeToNotifications: async () => {
         set({ loading: true, error: null });
 
         try {
@@ -102,22 +96,10 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
                 language: navigator.language,
             };
 
-            const response = await fetch(`${API_URL}/api/notifications/subscribe`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`,
-                },
-                body: JSON.stringify({
-                    fcmToken: token,
-                    deviceInfo,
-                }),
+            await apiClient.post('/api/notifications/subscribe', {
+                fcmToken: token,
+                deviceInfo,
             });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to subscribe');
-            }
 
             set({ isSubscribed: true, loading: false });
             console.log('✅ Subscribed to push notifications');
@@ -131,29 +113,12 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
         }
     },
 
-    /**
-     * Unsubscribe from push notifications
-     */
+    
     unsubscribeFromNotifications: async () => {
         set({ loading: true, error: null });
 
         try {
-            const authToken = localStorage.getItem('token');
-            if (!authToken) {
-                throw new Error('Not authenticated');
-            }
-
-            const response = await fetch(`${API_URL}/api/notifications/unsubscribe`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                },
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to unsubscribe');
-            }
+            await apiClient.post('/api/notifications/unsubscribe');
 
             set({
                 isSubscribed: false,
@@ -171,15 +136,12 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
         }
     },
 
-    /**
-     * Initialize foreground message listener
-     * Shows notifications when app is open
-     */
+    
     initializeForegroundListener: () => {
         onForegroundMessage((payload) => {
             console.log('📬 Foreground notification:', payload);
 
-            // Show browser notification
+            
             if (Notification.permission === 'granted' && payload.notification) {
                 new Notification(payload.notification.title || 'New Notification', {
                     body: payload.notification.body,

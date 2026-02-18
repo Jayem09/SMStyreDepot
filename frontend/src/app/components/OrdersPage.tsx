@@ -188,7 +188,7 @@ export function OrdersPage() {
                                                     })} • {order.item_count} {order.item_count === 1 ? 'item' : 'items'}
                                                 </p>
 
-                                                {/* Stepper for detail */}
+                                                {}
                                                 <div className="max-w-md hidden md:block">
                                                     <OrderStatusStepper status={order.status} />
                                                 </div>
@@ -213,7 +213,7 @@ export function OrdersPage() {
                 )}
             </main>
 
-            {/* Order Details Modal */}
+            {}
             {selectedOrder && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:p-6 overflow-hidden">
                     <div
@@ -222,7 +222,7 @@ export function OrdersPage() {
                     />
 
                     <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
-                        {/* Header */}
+                        {}
                         <div className="p-6 sm:p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                             <div>
                                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">Order Details</h2>
@@ -236,10 +236,10 @@ export function OrdersPage() {
                             </button>
                         </div>
 
-                        {/* Content */}
+                        {}
                         <div className="flex-1 overflow-y-auto p-6 sm:p-8">
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                {/* Left: Items */}
+                                {}
                                 <div className="lg:col-span-2 space-y-6">
                                     <div className="space-y-4">
                                         <h3 className="font-bold text-slate-900 flex items-center gap-2">
@@ -279,16 +279,16 @@ export function OrdersPage() {
                                         </div>
                                     </div>
 
-                                    {/* Tracking Stepper */}
+                                    {}
                                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-inner">
                                         <h3 className="font-bold text-slate-900 mb-6">Tracking Status</h3>
                                         <OrderStatusStepper status={selectedOrder.status} />
                                     </div>
                                 </div>
 
-                                {/* Right: Summary & Shipping */}
+                                {}
                                 <div className="space-y-6">
-                                    {/* Order Summary */}
+                                    {}
                                     <div className="bg-slate-900 rounded-3xl p-6 text-white shadow-xl shadow-slate-900/20">
                                         <h3 className="font-bold mb-4 flex items-center gap-2">
                                             Summary
@@ -312,7 +312,7 @@ export function OrdersPage() {
                                         </div>
                                     </div>
 
-                                    {/* Shipping Address */}
+                                    {}
                                     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
                                         <h3 className="font-bold text-slate-900 flex items-center gap-2">
                                             <MapPin className="w-5 h-5 text-blue-600" />
@@ -339,7 +339,7 @@ export function OrdersPage() {
                             </div>
                         </div>
 
-                        {/* Footer */}
+                        {}
                         <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
                             <button
                                 onClick={() => setSelectedOrder(null)}

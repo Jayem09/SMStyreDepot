@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { getOptimizedImageUrl } from '@/app/utils/imageUtils';
 
 const ERROR_IMG_SRC =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg=='
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg==';
 
 export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElement>) {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -9,7 +10,7 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
 
   const { src, alt, style, className, loading = "lazy", ...rest } = props
 
-  // Reset states if src changes
+  
   useEffect(() => {
     setIsLoaded(false)
     setDidError(false)
@@ -36,14 +37,11 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
     )
   }
 
-  // Optimization: Automatically request WebP/Optimized version from Supabase if applicable
-  const optimizedSrc = src?.includes('supabase.co') && !src.includes('?')
-    ? `${src}?width=600&quality=75&format=webp`
-    : src;
+  const optimizedSrc = getOptimizedImageUrl(src || '', { width: 600, quality: 75 });
 
   return (
     <div className={`relative overflow-hidden ${className ?? ''}`} style={style}>
-      {/* Skeleton / Placeholder */}
+      {}
       {!isLoaded && (
         <div className="absolute inset-0 bg-slate-200 animate-pulse flex items-center justify-center">
           <div className="w-1/3 h-1/3 bg-slate-300 rounded-full opacity-20" />

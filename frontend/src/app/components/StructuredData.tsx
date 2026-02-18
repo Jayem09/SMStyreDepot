@@ -12,13 +12,13 @@ export function StructuredData({ type, data }: StructuredDataProps) {
         ...data
     };
 
-    // Add default organization data if it's a LocalBusiness
+    
     if (type === 'LocalBusiness') {
         structuredData = {
             "@context": "https://schema.org",
             "@type": "AutomotiveBusiness",
             "name": "SMS Tyre Depot",
-            "image": "https://smstyredepot.com/og-image.jpg",
+            "image": `${window.location.origin}/og-image.jpg`,
             "description": "Premium tyres and magwheels shop in the Philippines with professional fitting and balancing services.",
             "address": {
                 "@type": "PostalAddress",
@@ -30,7 +30,7 @@ export function StructuredData({ type, data }: StructuredDataProps) {
             },
             "telephone": "+63 917 706 0025",
             "email": "smstyredepotlipa@gmail.com",
-            "url": "https://smstyredepot.com",
+            "url": window.location.origin,
             "priceRange": "₱₱",
             "openingHoursSpecification": [
                 {

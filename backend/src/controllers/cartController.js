@@ -29,7 +29,7 @@ export const getCart = async (req, res, next) => {
       throw error;
     }
 
-    // Transform the data to match expected format
+    
     const items = (cartItems || []).map(item => ({
       id: item.id,
       quantity: item.quantity,
@@ -57,7 +57,7 @@ export const addToCart = async (req, res, next) => {
 
     const { product_id, quantity } = req.body;
 
-    // Check if product exists
+    
     const { data: product, error: productError } = await supabase
       .from('products')
       .select('id, stock')
@@ -68,12 +68,12 @@ export const addToCart = async (req, res, next) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Check stock
+    
     if (product.stock < quantity) {
       return res.status(400).json({ error: 'Insufficient stock' });
     }
 
-    // Check if item already in cart
+    
     const { data: existingItem } = await supabase
       .from('cart')
       .select('id, quantity')
@@ -82,7 +82,7 @@ export const addToCart = async (req, res, next) => {
       .single();
 
     if (existingItem) {
-      // Update quantity
+      
       const newQuantity = existingItem.quantity + quantity;
       const { error: updateError } = await supabase
         .from('cart')
@@ -96,7 +96,7 @@ export const addToCart = async (req, res, next) => {
         throw updateError;
       }
     } else {
-      // Add new item
+      
       const { error: insertError } = await supabase
         .from('cart')
         .insert({
@@ -125,7 +125,7 @@ export const updateCartItem = async (req, res, next) => {
       return res.status(400).json({ error: 'Quantity must be at least 1' });
     }
 
-    // Check if item belongs to user
+    
     const { data: item, error: itemError } = await supabase
       .from('cart')
       .select('*, products:product_id (stock)')
@@ -137,7 +137,7 @@ export const updateCartItem = async (req, res, next) => {
       return res.status(404).json({ error: 'Cart item not found' });
     }
 
-    // Check stock
+    
     const productStock = item.products?.stock || 0;
     if (productStock < quantity) {
       return res.status(400).json({ error: 'Insufficient stock' });

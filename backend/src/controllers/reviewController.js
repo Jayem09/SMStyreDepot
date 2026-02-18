@@ -1,10 +1,6 @@
 import supabase from '../config/database.js';
 
-/**
- * Get all reviews with user information
- * @route GET /api/reviews
- * @access Public
- */
+
 export const getAllReviews = async (req, res) => {
     try {
         const { data: reviews, error } = await supabase
@@ -25,7 +21,7 @@ export const getAllReviews = async (req, res) => {
             return res.status(500).json({ message: 'Error fetching reviews' });
         }
 
-        // Format the data to be easier for the frontend to consume
+        
         const formattedReviews = reviews.map(review => ({
             id: review.id,
             rating: review.rating,
@@ -41,11 +37,7 @@ export const getAllReviews = async (req, res) => {
     }
 };
 
-/**
- * Get reviews for a specific product
- * @route GET /api/reviews/product/:productId
- * @access Public
- */
+
 export const getProductReviews = async (req, res) => {
     const { productId } = req.params;
 
@@ -84,11 +76,7 @@ export const getProductReviews = async (req, res) => {
     }
 };
 
-/**
- * Create a new review
- * @route POST /api/reviews
- * @access Private
- */
+
 export const createReview = async (req, res) => {
     const { productId, rating, comment } = req.body;
     const userId = req.user.id;
@@ -98,7 +86,7 @@ export const createReview = async (req, res) => {
     }
 
     try {
-        // Check if user has already reviewed this product
+        
         const { data: existingReview, error: checkError } = await supabase
             .from('reviews')
             .select('id')
@@ -126,7 +114,7 @@ export const createReview = async (req, res) => {
             return res.status(500).json({ message: 'Error creating review' });
         }
 
-        // Update product rating (simplified: could be done via a trigger or more complex query)
+        
         const { data: allRatings } = await supabase
             .from('reviews')
             .select('rating')

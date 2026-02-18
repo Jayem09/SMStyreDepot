@@ -11,18 +11,18 @@ export const handlePayMongoWebhook = async (req, res) => {
     }
 
     try {
-        // 1. Verify webhook signature (Basic security check)
-        // In a real implementation, you'd parse PayMongo's complex signature format
-        // For now, we'll log and process the event types for 'checkout_session.paid'
+        
+        
+        
 
         const { data } = req.body;
-        const eventType = data.attributes.type; // e.g., 'payment.paid'
+        const eventType = data.attributes.type; 
         const resource = data.attributes.resource;
         const attributes = resource.attributes;
 
         console.log(`🔔 PayMongo Webhook Received: ${eventType}`);
 
-        // Handle various payment success events
+        
         const successEvents = [
             'payment.paid',
             'checkout_session.payment.paid',
@@ -31,15 +31,15 @@ export const handlePayMongoWebhook = async (req, res) => {
         ];
 
         if (successEvents.includes(eventType)) {
-            const description = attributes.description; // e.g. "SMS Tyre Depot Order #123"
+            const description = attributes.description; 
 
             if (description) {
-                // Extract Order ID from description (looks for # followed by digits)
+                
                 const orderIdMatch = description.match(/#(\d+)/);
                 if (orderIdMatch) {
                     const orderId = orderIdMatch[1];
 
-                    // Update Order status in Database
+                    
                     const { error } = await supabase
                         .from('orders')
                         .update({
@@ -55,14 +55,14 @@ export const handlePayMongoWebhook = async (req, res) => {
 
                     console.log(`✅ Order #${orderId} marked as PAID via PayMongo webhook (${eventType}).`);
 
-                    // Get user_id for the order to send notification
+                    
                     const { data: orderData } = await supabase
                         .from('orders')
                         .select('user_id')
                         .eq('id', orderId)
                         .single();
 
-                    // Send push notification for payment confirmation
+                    
                     if (orderData?.user_id) {
                         try {
                             await sendOrderUpdateNotification(orderData.user_id, orderId, 'paid');
@@ -71,7 +71,7 @@ export const handlePayMongoWebhook = async (req, res) => {
                         }
                     }
 
-                    // Trigger order confirmation email
+                    
                     import('../services/notificationService.js').then(({ sendOrderEmail }) => {
                         sendOrderEmail(orderId, 'CONFIRMATION').catch(err => console.error('Email trigger error:', err));
                     });

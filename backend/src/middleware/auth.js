@@ -3,7 +3,7 @@ import supabase from '../config/database.js';
 
 export const authenticate = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+    const token = req.headers.authorization?.split(' ')[1]; 
 
     if (!token) {
       return res.status(401).json({ error: 'No token provided' });
@@ -11,7 +11,7 @@ export const authenticate = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Get user from database
+    
     const { data: user, error } = await supabase
       .from('users')
       .select('id, email, name, phone, role')
@@ -37,9 +37,9 @@ export const authenticate = async (req, res, next) => {
 
 export const requireAdmin = async (req, res, next) => {
   try {
-    // First authenticate
+    
     await authenticate(req, res, () => {
-      // Check if user is admin
+      
       if (req.user?.role !== 'admin') {
         return res.status(403).json({ error: 'Admin access required' });
       }
@@ -68,7 +68,7 @@ export const optionalAuth = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    // If token is invalid, just continue without user
+    
     next();
   }
 };

@@ -18,7 +18,7 @@ export function LoginPage() {
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
             <div className="w-full max-w-sm">
-                {/* Logo/Icon */}
+                {}
                 <div className="text-center mb-8">
                     <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 mx-auto mb-4 flex items-center justify-center">
                         <User className="w-6 h-6 text-blue-600" />
@@ -27,7 +27,7 @@ export function LoginPage() {
                     <p className="text-slate-500 text-sm mt-1">Sign in to your account to continue</p>
                 </div>
 
-                {/* Card */}
+                {}
                 <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
                     <form
                         className="space-y-5"
@@ -51,16 +51,16 @@ export function LoginPage() {
                                     throw new Error(data.error || "Login failed");
                                 }
 
-                                // Store auth data
+                                
                                 login(data.user, data.token);
 
-                                // Show success toast
+                                
                                 toast.success("Login successful!", {
                                     description: `Welcome back, ${data.user.name}!`,
                                     duration: 3000,
                                 });
 
-                                // Redirect to home page after login
+                                
                                 navigate("/");
                             } catch (err: any) {
                                 const errorMessage = err.message || "Login failed. Please try again.";
@@ -80,7 +80,7 @@ export function LoginPage() {
                             </div>
                         )}
 
-                        {/* Email */}
+                        {}
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
                                 Email Address
@@ -98,7 +98,7 @@ export function LoginPage() {
                             </div>
                         </div>
 
-                        {/* Password */}
+                        {}
                         <div className="space-y-1.5">
                             <div className="flex justify-between items-center px-1">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">
@@ -131,7 +131,7 @@ export function LoginPage() {
                             </div>
                         </div>
 
-                        {/* Remember Me */}
+                        {}
                         <label className="flex items-center gap-3 cursor-pointer group px-1">
                             <div className="relative flex items-center">
                                 <input
@@ -144,7 +144,7 @@ export function LoginPage() {
                             </span>
                         </label>
 
-                        {/* Login Button */}
+                        {}
                         <button
                             type="submit"
                             disabled={loading}
@@ -167,7 +167,7 @@ export function LoginPage() {
                     </div>
                 </div>
 
-                {/* Footer Text */}
+                {}
                 <p className="text-center text-xs text-slate-400 mt-8 leading-relaxed">
                     By continuing, you agree to our{" "}
                     <Link to="/terms" className="text-slate-600 hover:underline">Terms of Service</Link>

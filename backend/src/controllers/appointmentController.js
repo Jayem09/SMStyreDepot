@@ -18,7 +18,7 @@ export const createAppointment = async (req, res) => {
         const { data, error } = await supabase
             .from('appointments')
             .insert({
-                user_id: req.user?.id || null, // Optional user ID if logged in
+                user_id: req.user?.id || null, 
                 full_name: fullName,
                 email,
                 phone,
@@ -34,9 +34,9 @@ export const createAppointment = async (req, res) => {
 
         if (error) throw error;
 
-        // ---------------------------------------------------------
-        // Trigger Real Notifications (Email/SMS)
-        // ---------------------------------------------------------
+        
+        
+        
         const notificationResult = await sendAppointmentEmail(data);
         if (!notificationResult.success) {
             console.warn('⚠️  Notification partially failed (see logs above), but appointment was saved.');

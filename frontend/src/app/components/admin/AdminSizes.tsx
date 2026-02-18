@@ -92,7 +92,7 @@ export function AdminSizes() {
                 <p className="text-slate-500 mt-1">Manage available tyre sizes for products</p>
             </div>
 
-            {/* Add New Size */}
+            {}
             <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                 <form onSubmit={handleCreateSize} className="flex gap-4 max-w-md">
                     <input
@@ -114,7 +114,7 @@ export function AdminSizes() {
                 </form>
             </div>
 
-            {/* Sizes List */}
+            {}
             {loading ? (
                 <div className="flex justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-blue-600" />

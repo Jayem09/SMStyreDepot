@@ -7,8 +7,8 @@ interface ScrollAnimationProps {
     children: React.ReactNode;
     variant?: AnimationVariant;
     className?: string;
-    delay?: number; // in ms
-    duration?: number; // in ms (default to fast/snappy)
+    delay?: number; 
+    duration?: number; 
     threshold?: number;
 }
 
@@ -17,7 +17,7 @@ export function ScrollAnimation({
     variant = "fade-up",
     className = "",
     delay = 0,
-    duration = 500, // Fast default duration
+    duration = 500, 
     threshold = 0.1,
 }: ScrollAnimationProps) {
     const { ref, isVisible } = useScrollAnimation({ threshold });

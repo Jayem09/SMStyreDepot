@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+import { apiClient } from '../utils/apiClient';
 
 interface Product {
     id: string;
@@ -17,32 +18,23 @@ interface WishlistState {
     loading: boolean;
     error: string | null;
 
-    // Actions
+    
     fetchWishlist: (token: string) => Promise<void>;
     toggleWishlist: (productId: string, token: string) => Promise<void>;
     isInWishlist: (productId: string) => boolean;
     clearWishlist: () => void;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const useWishlistStore = create<WishlistState>((set, get) => ({
     items: [],
     loading: false,
     error: null,
 
-    fetchWishlist: async (token) => {
+    fetchWishlist: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await fetch(`${API_URL}/api/wishlist`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) throw new Error('Failed to fetch wishlist');
-
-            const data = await response.json();
+            const data = await apiClient.get<{ wishlist: Product[] }>('/api/wishlist');
             set({ items: data.wishlist || [], loading: false });
         } catch (error: any) {
             set({ error: error.message, loading: false });
@@ -52,20 +44,9 @@ export const useWishlistStore = create<WishlistState>((set, get) => ({
 
     toggleWishlist: async (productId, token) => {
         try {
-            const response = await fetch(`${API_URL}/api/wishlist/toggle`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ productId })
-            });
+            const data = await apiClient.post<{ action: 'added' | 'removed' }>('/api/wishlist/toggle', { productId });
 
-            if (!response.ok) throw new Error('Failed to toggle wishlist');
-
-            const data = await response.json();
-
-            // Re-fetch wishlist to keep items in sync
+            
             await get().fetchWishlist(token);
 
             if (data.action === 'added') {

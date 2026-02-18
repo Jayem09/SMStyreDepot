@@ -6,10 +6,7 @@ import {
 } from '../services/pushNotificationService.js';
 import { isFirebaseConfigured } from '../config/firebase-config.js';
 
-/**
- * Subscribe to push notifications
- * POST /api/notifications/subscribe
- */
+
 export async function subscribe(req, res) {
     try {
         const { fcmToken, deviceInfo } = req.body;
@@ -40,10 +37,7 @@ export async function subscribe(req, res) {
     }
 }
 
-/**
- * Unsubscribe from push notifications
- * POST /api/notifications/unsubscribe
- */
+
 export async function unsubscribe(req, res) {
     try {
         const userId = req.user.id;
@@ -57,10 +51,7 @@ export async function unsubscribe(req, res) {
     }
 }
 
-/**
- * Send test notification to current user
- * POST /api/notifications/test
- */
+
 export async function sendTest(req, res) {
     try {
         const userId = req.user.id;
@@ -93,10 +84,7 @@ export async function sendTest(req, res) {
     }
 }
 
-/**
- * Send broadcast notification to all users (Admin only)
- * POST /api/notifications/broadcast
- */
+
 export async function broadcast(req, res) {
     try {
         const { title, body, link } = req.body;
@@ -130,10 +118,7 @@ export async function broadcast(req, res) {
     }
 }
 
-/**
- * Check if push notifications are configured
- * GET /api/notifications/status
- */
+
 export function getStatus(req, res) {
     res.json({
         configured: isFirebaseConfigured(),

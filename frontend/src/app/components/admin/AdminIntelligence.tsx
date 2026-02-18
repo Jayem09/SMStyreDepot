@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '../../stores/authStore';
 import { useIntelligenceStore } from '../../stores/intelligenceStore';
 import {
     AreaChart, Area,
@@ -30,7 +29,6 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export function AdminIntelligence() {
-    const { token } = useAuthStore();
     const {
         forecast,
         historical,
@@ -49,16 +47,12 @@ export function AdminIntelligence() {
     const [selectedPeriod] = useState('30d');
 
     useEffect(() => {
-        if (token) {
-            fetchAll(token);
-        }
-    }, [token]);
+        fetchAll();
+    }, []);
 
     const handleMetricChange = async (metric: string) => {
         setSelectedMetric(metric);
-        if (token) {
-            await fetchForecast(token, selectedPeriod, metric);
-        }
+        await fetchForecast(selectedPeriod, metric);
     };
 
     if (loading) {
@@ -82,7 +76,7 @@ export function AdminIntelligence() {
         );
     }
 
-    // Combine historical and forecast for chart
+    
     const combinedForecastData = [
         ...historical.map(d => ({ ...d, type: 'historical' })),
         ...forecast.map(d => ({ ...d, value: d.predicted, type: 'forecast' }))
@@ -90,7 +84,7 @@ export function AdminIntelligence() {
 
     return (
         <div className="space-y-6 pb-12">
-            {/* Header */}
+            {}
             <div className="flex items-center gap-3">
                 <div className="bg-slate-700 p-3 rounded-lg">
                     <Brain className="w-8 h-8 text-white" />
@@ -101,7 +95,7 @@ export function AdminIntelligence() {
                 </div>
             </div>
 
-            {/* Sales Forecast */}
+            {}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-slate-900">Sales Forecast (Next 30 Days)</h2>
@@ -169,7 +163,7 @@ export function AdminIntelligence() {
                 )}
             </div>
 
-            {/* Customer Segmentation */}
+            {}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Customer Segmentation (RFM Analysis)</h2>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -189,9 +183,9 @@ export function AdminIntelligence() {
                 </div>
             </div>
 
-            {/* Churn Risk & Inventory in 2 columns */}
+            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Churn Risk */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Churn Risk Customers</h2>
                     <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -225,7 +219,7 @@ export function AdminIntelligence() {
                     </div>
                 </div>
 
-                {/* Inventory Recommendations */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Inventory Alerts</h2>
                     <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -262,7 +256,7 @@ export function AdminIntelligence() {
                 </div>
             </div>
 
-            {/* Product Performance Matrix */}
+            {}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Product Performance Matrix</h2>
                 {Array.isArray(productInsights) && productInsights.length > 0 ? (
@@ -298,7 +292,7 @@ export function AdminIntelligence() {
                 )}
             </div>
 
-            {/* Seasonal Trends */}
+            {}
             {seasonalTrends && seasonalTrends.hasSeasonal && (
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Seasonal Trends</h2>

@@ -21,8 +21,8 @@ export const createOrder = async (req, res, next) => {
     let finalItems = [];
 
     if (bodyItems && Array.isArray(bodyItems) && bodyItems.length > 0) {
-      // If items are provided in the body, use them
-      // Fetch product details for these items to ensure current prices and stock
+      
+      
       const productIds = bodyItems.map(item => item.product_id || item.id);
       const { data: products, error: productsError } = await supabase
         .from('products')
@@ -39,11 +39,11 @@ export const createOrder = async (req, res, next) => {
         return {
           product_id: product.id,
           quantity: item.quantity,
-          products: product // format matched to legacy cart query
+          products: product 
         };
       });
     } else {
-      // Fallback: Get items from the cart table
+      
       const { data: cartItems, error: cartError } = await supabase
         .from('cart')
         .select(`
@@ -64,17 +64,16 @@ export const createOrder = async (req, res, next) => {
       return res.status(400).json({ error: 'Order must contain at least one item' });
     }
 
-    // Calculate total and check stock
+    
     let total = 0;
     for (const item of finalItems) {
-      const price = parseFloat(item.products.price);
-      if (item.products.stock < item.quantity) {
-        return res.status(400).json({ error: `Insufficient stock for product: ${item.products.name || item.product_id}` });
+      if (!item.products || item.products.stock < item.quantity) {
+        return res.status(400).json({ error: `Insufficient stock for product: ${item.products?.name || item.product_id}` });
       }
-      total += price * item.quantity;
+      total += parseFloat(item.products.price) * item.quantity;
     }
 
-    // Create order with initial status
+    
     const isPayInStore = req.body.paymentMethod === 'store';
     const initialStatus = isPayInStore ? 'reserved' : 'pending_payment';
 
@@ -98,11 +97,11 @@ export const createOrder = async (req, res, next) => {
 
     const orderId = order.id;
 
-    // Create order items and update stock
-    for (const item of finalItems) {
+    
+    await Promise.all(finalItems.map(async (item) => {
       const productPrice = parseFloat(item.products.price);
 
-      // Insert order item
+      
       const { error: itemError } = await supabase
         .from('order_items')
         .insert({
@@ -114,25 +113,24 @@ export const createOrder = async (req, res, next) => {
 
       if (itemError) throw itemError;
 
-      // Update product stock
-      const newStock = item.products.stock - item.quantity;
+      
       const { error: stockError } = await supabase
         .from('products')
-        .update({ stock: newStock })
+        .update({ stock: item.products.stock - item.quantity })
         .eq('id', item.product_id);
 
       if (stockError) throw stockError;
-    }
+    }));
 
-    // Clear cart table
+    
     await supabase
       .from('cart')
       .delete()
       .eq('user_id', req.user.id);
 
-    // ---------------------------------------------------------
-    // PayMongo Integration Logic
-    // ---------------------------------------------------------
+    
+    
+    
     if (!isPayInStore) {
       try {
         const paymongoSecret = process.env.PAYMONGO_SECRET_KEY;
@@ -159,7 +157,7 @@ export const createOrder = async (req, res, next) => {
                 description: `SMS Tyre Depot Order #${orderId}`,
                 line_items: finalItems.map(item => ({
                   currency: 'PHP',
-                  amount: Math.round(parseFloat(item.products.price) * 100), // in centavos
+                  amount: Math.round(parseFloat(item.products.price) * 100), 
                   name: item.products.name || `Product #${item.product_id}`,
                   quantity: item.quantity
                 })),
@@ -195,20 +193,19 @@ export const createOrder = async (req, res, next) => {
       }
     }
 
-    // Default response for Store Pickup or PayMongo fallback
+    
     if (isPayInStore) {
-      // Trigger order confirmation email for Pay in Store
+      
       import('../services/notificationService.js').then(({ sendOrderEmail }) => {
         sendOrderEmail(orderId, 'CONFIRMATION').catch(err => console.error('Email trigger error:', err));
       });
     }
 
-    // Send push notification for order creation
+    
     try {
       await sendOrderUpdateNotification(req.user.id, orderId, initialStatus);
     } catch (notifError) {
       console.error('Push notification error:', notifError);
-      // Don't fail the order if notification fails
     }
 
     res.status(201).json({
@@ -243,7 +240,7 @@ export const getOrders = async (req, res, next) => {
       throw error;
     }
 
-    // Transform data to include item_count
+    
     const ordersWithCount = (orders || []).map(order => ({
       id: order.id,
       total: parseFloat(order.total),
@@ -292,7 +289,7 @@ export const getOrder = async (req, res, next) => {
       throw itemsError;
     }
 
-    // Transform order items
+    
     const items = (orderItems || []).map(item => ({
       quantity: item.quantity,
       price: parseFloat(item.price),

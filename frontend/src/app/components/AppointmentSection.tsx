@@ -62,7 +62,7 @@ export function AppointmentSection() {
                     const data = await response.json();
                     errorMessage = data.error || errorMessage;
                 } catch (e) {
-                    // If response is not JSON (e.g. HTML error page)
+                    
                     console.error("Failed to parse error response:", e);
                 }
                 toast.error(errorMessage);
@@ -106,7 +106,7 @@ export function AppointmentSection() {
         <section id="appointment" className="py-24 bg-slate-50 border-t border-slate-200">
             <div className="container mx-auto px-4">
                 <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col lg:flex-row border border-slate-100">
-                    {/* Left Side: Info */}
+                    {}
                     <div className="lg:w-1/3 bg-slate-900 p-12 text-white flex flex-col justify-between">
                         <div>
                             <span className="text-blue-400 font-bold tracking-widest text-[10px] uppercase mb-4 block">Quick Booking</span>
@@ -137,7 +137,7 @@ export function AppointmentSection() {
                         </div>
                     </div>
 
-                    {/* Right Side: Form */}
+                    {}
                     <div className="lg:w-2/3 p-12">
                         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-2">

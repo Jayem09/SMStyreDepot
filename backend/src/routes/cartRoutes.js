@@ -11,7 +11,7 @@ import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// All cart routes require authentication
+
 router.use(authenticate);
 
 router.get('/', getCart);

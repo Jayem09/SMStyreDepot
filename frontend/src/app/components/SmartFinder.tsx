@@ -185,7 +185,7 @@ export function SmartFinder({ onSizeSelected }: SmartFinderProps) {
 
             <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    {/* Make */}
+                    {}
                     <div className="space-y-1.5 relative group">
                         <label className={`text-[10px] uppercase tracking-wider font-bold transition-colors ml-1 ${step >= 1 ? "text-blue-600" : "text-slate-500"}`}>1. Make</label>
                         <div className="relative">
@@ -202,7 +202,7 @@ export function SmartFinder({ onSizeSelected }: SmartFinderProps) {
                         </div>
                     </div>
 
-                    {/* Model */}
+                    {}
                     <div className="space-y-1.5 relative group">
                         <label className={`text-[10px] uppercase tracking-wider font-bold transition-colors ml-1 ${step >= 2 ? "text-blue-600" : "text-slate-500"}`}>2. Model</label>
                         <div className="relative">
@@ -220,7 +220,7 @@ export function SmartFinder({ onSizeSelected }: SmartFinderProps) {
                         </div>
                     </div>
 
-                    {/* Year */}
+                    {}
                     <div className="space-y-1.5 relative group">
                         <label className={`text-[10px] uppercase tracking-wider font-bold transition-colors ml-1 ${step >= 3 ? "text-blue-600" : "text-slate-500"}`}>3. Year</label>
                         <div className="relative">
@@ -238,7 +238,7 @@ export function SmartFinder({ onSizeSelected }: SmartFinderProps) {
                         </div>
                     </div>
 
-                    {/* Trim */}
+                    {}
                     <div className="space-y-1.5 relative group">
                         <label className={`text-[10px] uppercase tracking-wider font-bold transition-colors ml-1 ${step >= 4 ? "text-blue-600" : "text-slate-500"}`}>4. Trim / Engine</label>
                         <div className="relative">

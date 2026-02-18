@@ -10,9 +10,9 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_ANON_KEY) in your .env file');
 }
 
-// Create Supabase client with better error handling
-// Use service role key for backend operations (bypasses RLS)
-// Use anon key if you want to respect Row Level Security policies
+
+
+
 const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     autoRefreshToken: false,
@@ -28,7 +28,7 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
   },
 });
 
-// Test connection (non-blocking)
+
 supabase.from('users').select('count').limit(1)
   .then(({ data, error }) => {
     if (error) {

@@ -18,7 +18,7 @@ export function AdminBrands() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Modal/Form State
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
     const [formData, setFormData] = useState({
@@ -28,12 +28,12 @@ export function AdminBrands() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // New: Asset Picker State
+    
     const [availableAssets, setAvailableAssets] = useState<{ name: string, path: string }[]>([]);
     const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
     const [loadingAssets, setLoadingAssets] = useState(false);
 
-    // New: Local File Upload State
+    
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -103,13 +103,13 @@ export function AdminBrands() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Validate file type
+        
         if (!file.type.startsWith("image/")) {
             toast.error("File must be an image");
             return;
         }
 
-        // Validate file size (max 5MB)
+        
         if (file.size > 5 * 1024 * 1024) {
             toast.error("Image is too large (max 5MB)");
             return;
@@ -198,7 +198,7 @@ export function AdminBrands() {
                 </button>
             </div>
 
-            {/* Search & Stats */}
+            {}
             <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -216,7 +216,7 @@ export function AdminBrands() {
                 </div>
             </div>
 
-            {/* Brands Grid */}
+            {}
             {loading ? (
                 <div className="flex justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
@@ -262,7 +262,7 @@ export function AdminBrands() {
                 </div>
             )}
 
-            {/* Modal */}
+            {}
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
                     <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
@@ -291,7 +291,7 @@ export function AdminBrands() {
                                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Brand Logo</label>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    {/* Logo Preview / Current Logo */}
+                                    {}
                                     <div className="aspect-square bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-center overflow-hidden p-4 relative group">
                                         {formData.logo ? (
                                             <>
@@ -312,7 +312,7 @@ export function AdminBrands() {
                                         )}
                                     </div>
 
-                                    {/* Upload Zone */}
+                                    {}
                                     <div
                                         onClick={() => fileInputRef.current?.click()}
                                         className="aspect-square bg-blue-50/30 rounded-2xl border-2 border-dashed border-blue-200 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all group"

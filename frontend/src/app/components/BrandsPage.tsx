@@ -39,7 +39,7 @@ export function BrandsPage() {
         fetchBrands();
     }, []);
 
-    // Pagination State
+    
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
     const brandGridRef = useRef<HTMLDivElement>(null);
@@ -48,15 +48,15 @@ export function BrandsPage() {
         return products.filter((p) => p.brand === brandName);
     };
 
-    // Calculate pagination
+    
     const totalPages = Math.ceil(brands.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedBrands = brands.slice(startIndex, startIndex + itemsPerPage);
 
-    // Scroll to top of grid on page change
+    
     useEffect(() => {
         if (currentPage > 1 && brandGridRef.current) {
-            const offset = 120; // Account for fixed header
+            const offset = 120; 
             const elementPosition = brandGridRef.current.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -75,7 +75,7 @@ export function BrandsPage() {
             />
             <Header />
 
-            {/* Hero Section */}
+            {}
             <div className="relative pt-48 pb-32 overflow-hidden">
                 <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl -z-10" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] -z-10" />
@@ -164,7 +164,7 @@ export function BrandsPage() {
                         </div>
                     )}
 
-                    {/* Pagination Controls */}
+                    {}
                     {totalPages > 1 && (
                         <div className="mt-20">
                             <Pagination>

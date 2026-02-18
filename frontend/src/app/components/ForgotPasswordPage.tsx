@@ -9,7 +9,7 @@ export function ForgotPasswordPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitted(true);
-        // TODO: Implement password reset API call
+        
     };
 
     if (submitted) {

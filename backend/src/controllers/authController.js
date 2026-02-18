@@ -24,7 +24,7 @@ export const register = async (req, res, next) => {
 
     const { email, password, name, phone } = req.body;
 
-    // Check if user exists
+    
     const { data: existingUser, error: checkError } = await supabase
       .from('users')
       .select('id')
@@ -32,23 +32,23 @@ export const register = async (req, res, next) => {
       .single();
 
     if (checkError) {
-      // PGRST116 is "not found" which is fine - means user doesn't exist
+      
       if (checkError.code === 'PGRST116') {
-        // User doesn't exist, continue with registration
+        
       } else if (checkError.code === '42P01') {
-        // Table doesn't exist
+        
         console.error('Table does not exist:', checkError);
         return res.status(500).json({
           error: 'Database table not found. Please run the schema.sql file in Supabase SQL Editor to create the tables.'
         });
       } else if (checkError.message && checkError.message.includes('fetch failed')) {
-        // Connection error
+        
         console.error('Supabase connection error:', checkError);
         return res.status(500).json({
           error: 'Cannot connect to Supabase. Please check your SUPABASE_URL and ensure your Supabase project is active.'
         });
       } else {
-        // Other database errors
+        
         console.error('Error checking existing user:', checkError);
         return res.status(500).json({
           error: `Database error: ${checkError.message || 'Unknown error'}`
@@ -60,10 +60,10 @@ export const register = async (req, res, next) => {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    // Hash password
+    
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create user
+    
     const { data: newUser, error } = await supabase
       .from('users')
       .insert({
@@ -91,7 +91,7 @@ export const register = async (req, res, next) => {
       });
     }
 
-    // Generate token
+    
     const token = generateToken(newUser.id);
 
     res.status(201).json({
@@ -119,7 +119,7 @@ export const login = async (req, res, next) => {
 
     const { email, password } = req.body;
 
-    // Find user
+    
     const { data: user, error } = await supabase
       .from('users')
       .select('*')
@@ -130,13 +130,13 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Check password
+    
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Generate token
+    
     const token = generateToken(user.id);
 
     res.json({
@@ -184,14 +184,14 @@ export const forgotPassword = async (req, res, next) => {
       .single();
 
     if (!user) {
-      // Don't reveal if email exists or not for security
+      
       return res.json({
         message: 'If the email exists, a password reset link has been sent'
       });
     }
 
-    // TODO: Send password reset email
-    // For now, just return success message
+    
+    
     res.json({
       message: 'If the email exists, a password reset link has been sent'
     });

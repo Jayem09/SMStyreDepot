@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '../../stores/authStore';
 import { useAnalyticsStore } from '../../stores/analyticsStore';
 import {
     LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
-    XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, ShoppingCart, Users, CreditCard, Loader2 } from 'lucide-react';
 
@@ -17,7 +16,6 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export function AdminAnalytics() {
-    const { token } = useAuthStore();
     const {
         overview,
         salesTimeline,
@@ -35,16 +33,12 @@ export function AdminAnalytics() {
     const [period, setPeriod] = useState('30d');
 
     useEffect(() => {
-        if (token) {
-            fetchAll(token, period);
-        }
-    }, [token]);
+        fetchAll(period);
+    }, []);
 
     const handlePeriodChange = async (newPeriod: string) => {
         setPeriod(newPeriod);
-        if (token) {
-            await fetchSalesTimeline(token, newPeriod);
-        }
+        await fetchSalesTimeline(newPeriod);
     };
 
     if (loading) {
@@ -74,7 +68,7 @@ export function AdminAnalytics() {
 
     return (
         <div className="space-y-6 pb-12">
-            {/* Header */}
+            {}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
@@ -92,7 +86,7 @@ export function AdminAnalytics() {
                 </select>
             </div>
 
-            {/* Overview Cards */}
+            {}
             {overview && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
@@ -124,7 +118,7 @@ export function AdminAnalytics() {
                 </div>
             )}
 
-            {/* Sales Timeline Chart */}
+            {}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">
                     Sales Timeline - {periodLabels[period]}
@@ -165,9 +159,9 @@ export function AdminAnalytics() {
                 )}
             </div>
 
-            {/* Best Sellers & Revenue by Brand */}
+            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Best Sellers Table */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">🏆 Best Sellers</h2>
                     <div className="space-y-3">
@@ -197,7 +191,7 @@ export function AdminAnalytics() {
                     </div>
                 </div>
 
-                {/* Revenue by Brand Pie Chart */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Revenue by Brand</h2>
                     {revenueByBrand.length > 0 ? (
@@ -213,7 +207,7 @@ export function AdminAnalytics() {
                                     fill="#8884d8"
                                     dataKey="revenue"
                                 >
-                                    {revenueByBrand.slice(0, 6).map((entry, index) => (
+                                    {revenueByBrand.slice(0, 6).map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
@@ -226,9 +220,9 @@ export function AdminAnalytics() {
                 </div>
             </div>
 
-            {/* Revenue by Category & Order Status */}
+            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Revenue by Category Bar Chart */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Revenue by Category</h2>
                     {revenueByCategory.length > 0 ? (
@@ -249,7 +243,7 @@ export function AdminAnalytics() {
                     )}
                 </div>
 
-                {/* Order Status Distribution Pie Chart */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Order Status Distribution</h2>
                     {orderStatusDistribution.length > 0 ? (
@@ -279,7 +273,7 @@ export function AdminAnalytics() {
                 </div>
             </div>
 
-            {/* Customer Insights */}
+            {}
             {customerStats && (
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Customer Insights</h2>

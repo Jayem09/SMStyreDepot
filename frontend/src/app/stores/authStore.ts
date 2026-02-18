@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthStore>()(
                 });
             },
             logout: () => {
-                // Clear the cart when logging out
+                
                 useCartStore.getState().clearCart();
 
                 set({

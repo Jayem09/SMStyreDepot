@@ -1,9 +1,9 @@
 import supabase from '../config/database.js';
 
-// GET /api/analytics/overview
+
 export const getOverview = async (req, res) => {
     try {
-        // Total revenue (all-time, completed orders only)
+        
         const { data: revenueData } = await supabase
             .from('orders')
             .select('total_amount')
@@ -11,27 +11,27 @@ export const getOverview = async (req, res) => {
 
         const totalRevenue = revenueData?.reduce((sum, order) => sum + parseFloat(order.total_amount), 0) || 0;
 
-        // Total orders
+        
         const { count: totalOrders } = await supabase
             .from('orders')
             .select('*', { count: 'exact', head: true });
 
-        // Total customers
+        
         const { count: totalCustomers } = await supabase
             .from('users')
             .select('*', { count: 'exact', head: true })
             .eq('role', 'customer');
 
-        // Average order value
+        
         const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-        // Calculate percentage changes (last 30 days vs previous 30 days)
+        
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         const sixtyDaysAgo = new Date();
         sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
-        // Revenue last 30 days
+        
         const { data: recentRevenue } = await supabase
             .from('orders')
             .select('total_amount')
@@ -40,7 +40,7 @@ export const getOverview = async (req, res) => {
 
         const recentRevenueTotal = recentRevenue?.reduce((sum, order) => sum + parseFloat(order.total_amount), 0) || 0;
 
-        // Revenue previous 30 days
+        
         const { data: previousRevenue } = await supabase
             .from('orders')
             .select('total_amount')
@@ -54,7 +54,7 @@ export const getOverview = async (req, res) => {
             ? ((recentRevenueTotal - previousRevenueTotal) / previousRevenueTotal) * 100
             : 0;
 
-        // Orders change
+        
         const { count: recentOrdersCount } = await supabase
             .from('orders')
             .select('*', { count: 'exact', head: true })
@@ -86,7 +86,7 @@ export const getOverview = async (req, res) => {
     }
 };
 
-// GET /api/analytics/sales-timeline?period=7d|30d|90d|1y
+
 export const getSalesTimeline = async (req, res) => {
     try {
         const { period = '30d' } = req.query;
@@ -106,7 +106,7 @@ export const getSalesTimeline = async (req, res) => {
             .gte('created_at', startDate.toISOString())
             .order('created_at', { ascending: true });
 
-        // Group by date
+        
         const salesByDate = {};
         orders?.forEach(order => {
             const date = order.created_at.split('T')[0];
@@ -130,7 +130,7 @@ export const getSalesTimeline = async (req, res) => {
     }
 };
 
-// GET /api/analytics/best-sellers?limit=10
+
 export const getBestSellers = async (req, res) => {
     try {
         const { limit = 10 } = req.query;
@@ -144,7 +144,7 @@ export const getBestSellers = async (req, res) => {
                 orders!inner(status)
             `);
 
-        // Filter out cancelled orders and group by product
+        
         const productStats = {};
         orderItems?.forEach(item => {
             if (item.orders.status === 'cancelled') return;
@@ -160,14 +160,14 @@ export const getBestSellers = async (req, res) => {
             productStats[item.product_id].revenue += item.quantity * parseFloat(item.price);
         });
 
-        // Get product details
+        
         const productIds = Object.keys(productStats);
         const { data: products } = await supabase
             .from('products')
             .select('id, name, brand, image_url')
             .in('id', productIds);
 
-        // Combine stats with product info
+        
         const bestSellers = products?.map(product => ({
             ...product,
             units_sold: productStats[product.id].units_sold,
@@ -183,7 +183,7 @@ export const getBestSellers = async (req, res) => {
     }
 };
 
-// GET /api/analytics/revenue-by-brand
+
 export const getRevenueByBrand = async (req, res) => {
     try {
         const { data: orderItems } = await supabase
@@ -195,7 +195,7 @@ export const getRevenueByBrand = async (req, res) => {
                 orders!inner(status)
             `);
 
-        // Get all products to map product_id to brand
+        
         const { data: products } = await supabase
             .from('products')
             .select('id, brand');
@@ -205,7 +205,7 @@ export const getRevenueByBrand = async (req, res) => {
             productBrandMap[p.id] = p.brand;
         });
 
-        // Calculate revenue by brand
+        
         const brandRevenue = {};
         orderItems?.forEach(item => {
             if (item.orders.status === 'cancelled') return;
@@ -235,7 +235,7 @@ export const getRevenueByBrand = async (req, res) => {
     }
 };
 
-// GET /api/analytics/revenue-by-category
+
 export const getRevenueByCategory = async (req, res) => {
     try {
         const { data: orderItems } = await supabase
@@ -247,7 +247,7 @@ export const getRevenueByCategory = async (req, res) => {
                 orders!inner(status)
             `);
 
-        // Get all products to map product_id to type (category)
+        
         const { data: products } = await supabase
             .from('products')
             .select('id, type');
@@ -257,7 +257,7 @@ export const getRevenueByCategory = async (req, res) => {
             productTypeMap[p.id] = p.type || 'Unknown';
         });
 
-        // Calculate revenue by category
+        
         const categoryRevenue = {};
         orderItems?.forEach(item => {
             if (item.orders.status === 'cancelled') return;
@@ -283,7 +283,7 @@ export const getRevenueByCategory = async (req, res) => {
     }
 };
 
-// GET /api/analytics/order-status-distribution
+
 export const getOrderStatusDistribution = async (req, res) => {
     try {
         const { data: orders } = await supabase
@@ -308,10 +308,10 @@ export const getOrderStatusDistribution = async (req, res) => {
     }
 };
 
-// GET /api/analytics/customer-stats
+
 export const getCustomerStats = async (req, res) => {
     try {
-        // Get all customers with their order count
+        
         const { data: customers } = await supabase
             .from('users')
             .select(`
@@ -333,7 +333,7 @@ export const getCustomerStats = async (req, res) => {
             }
         });
 
-        // Customer growth over last 30 days
+        
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -344,7 +344,7 @@ export const getCustomerStats = async (req, res) => {
             .gte('created_at', thirtyDaysAgo.toISOString())
             .order('created_at', { ascending: true });
 
-        // Group by date
+        
         const customersByDate = {};
         recentCustomers?.forEach(customer => {
             const date = customer.created_at.split('T')[0];

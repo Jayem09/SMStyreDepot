@@ -13,7 +13,7 @@ export function CartPage() {
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);
 
   const subtotal = getTotalPrice();
-  const tax = subtotal * 0.1; // 10% tax
+  const tax = subtotal * 0.1; 
   const shipping = cartItems.length > 0 ? 15.99 : 0;
   const total = subtotal + tax + shipping;
 
@@ -54,12 +54,12 @@ export function CartPage() {
             </ScrollAnimation>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-              {/* Cart Items List */}
+              {}
               <div className="lg:col-span-2 space-y-6">
                 {cartItems.map((item, index) => (
                   <ScrollAnimation key={item.id} variant="fade-up" delay={index * 100}>
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row gap-6 transition-all hover:border-blue-200 hover:shadow-md">
-                      {/* Product Image */}
+                      {}
                       <div className="w-full sm:w-32 h-32 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
                         <ImageWithFallback
                           src={item.image}
@@ -68,7 +68,7 @@ export function CartPage() {
                         />
                       </div>
 
-                      {/* Product Details */}
+                      {}
                       <div className="flex-1 flex flex-col">
                         <div className="flex justify-between items-start mb-2">
                           <div>
@@ -88,7 +88,7 @@ export function CartPage() {
                         </div>
 
                         <div className="flex items-end justify-between mt-auto pt-4 border-t border-slate-50">
-                          {/* Quantity Controls */}
+                          {}
                           <div className="flex items-center gap-3">
                             <span className="text-sm font-medium text-slate-600 hidden sm:inline">Qty:</span>
                             <div className="flex items-center gap-1 bg-slate-50 rounded-lg p-1 border border-slate-200">
@@ -109,7 +109,7 @@ export function CartPage() {
                             </div>
                           </div>
 
-                          {/* Price */}
+                          {}
                           <div className="text-right">
                             <div className="text-2xl font-bold text-slate-900">
                               ₱{(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -127,7 +127,7 @@ export function CartPage() {
                 ))}
               </div>
 
-              {/* Order Summary Sidebar */}
+              {}
               <div className="lg:col-span-1">
                 <ScrollAnimation variant="fade-up" delay={200}>
                   <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 sticky top-32">
@@ -172,7 +172,7 @@ export function CartPage() {
                       </Link>
                     </div>
 
-                    {/* Secure Checkout Badge */}
+                    {}
                     <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-2 text-slate-400 text-sm">
                       <ShoppingBag className="w-4 h-4" />
                       <span>Secure Checkout</span>

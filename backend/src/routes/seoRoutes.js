@@ -6,7 +6,7 @@ const router = express.Router();
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://smstyredepot.com';
 
-// robots.txt
+
 router.get('/robots.txt', (req, res) => {
     const robotsContent = `User-agent: *
 Allow: /
@@ -16,17 +16,17 @@ Sitemap: ${FRONTEND_URL}/sitemap.xml
     res.send(robotsContent);
 });
 
-// sitemap.xml
+
 router.get('/sitemap.xml', async (req, res) => {
     try {
-        // 1. Fetch all product IDs for dynamic links
+        
         const { data: products, error } = await supabase
             .from('products')
             .select('id, updated_at');
 
         if (error) throw error;
 
-        // 2. Define static routes
+        
         const staticRoutes = [
             '',
             '/products',
@@ -36,11 +36,11 @@ router.get('/sitemap.xml', async (req, res) => {
             '/contact'
         ];
 
-        // 3. Build XML content
+        
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-        // Add static routes
+        
         staticRoutes.forEach(route => {
             xml += `
   <url>
@@ -50,7 +50,7 @@ router.get('/sitemap.xml', async (req, res) => {
   </url>`;
         });
 
-        // Add dynamic product routes
+        
         products.forEach(product => {
             xml += `
   <url>

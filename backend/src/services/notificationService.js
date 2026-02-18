@@ -5,19 +5,19 @@ import supabase from '../config/database.js';
 
 dotenv.config();
 
-// Initialize Resend with API Key
+
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export const sendAppointmentEmail = async (appointmentData) => {
   const { full_name, email, phone, branch, service_type, appointment_date, appointment_time, notes } = appointmentData;
 
-  // 1. Send Email to Customer (Resend)
+  
   const emailPromise = sendCustomerEmail(appointmentData);
 
-  // 2. Send Telegram Alert to Owner
+  
   const telegramPromise = sendOwnerTelegram(appointmentData);
 
-  // Wait for both but don't let one failure block the other
+  
   const [emailResult, telegramResult] = await Promise.all([
     emailPromise.catch(err => ({ success: false, error: err })),
     telegramPromise.catch(err => ({ success: false, error: err }))
@@ -39,7 +39,7 @@ export const sendOrderEmail = async (orderId, type = 'CONFIRMATION') => {
   try {
     console.log(`📨 Fetching order details for email notification (Order #${orderId})...`);
 
-    // Fetch order with user and items
+    
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .select('*, users:user_id(*)')
@@ -163,7 +163,7 @@ const sendOwnerTelegram = async (d) => {
   }
 };
 
-// HTML Templates
+
 const getCustomerHTML = (d) => `
   <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
     <h2 style="color: #1e293b;">Hello ${d.full_name},</h2>

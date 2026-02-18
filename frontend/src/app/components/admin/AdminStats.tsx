@@ -98,7 +98,7 @@ export function AdminStats() {
                 <p className="text-slate-500 mt-1">Overview of your business</p>
             </div>
 
-            {/* Stats Grid */}
+            {}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {statCards.map((card, index) => {
                     const Icon = card.icon;
@@ -121,7 +121,7 @@ export function AdminStats() {
                 })}
             </div>
 
-            {/* Orders by Status */}
+            {}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Orders by Status</h2>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -134,9 +134,9 @@ export function AdminStats() {
                 </div>
             </div>
 
-            {/* Recent Orders & Low Stock */}
+            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Recent Orders */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Recent Orders</h2>
                     <div className="space-y-3">
@@ -175,7 +175,7 @@ export function AdminStats() {
                     </div>
                 </div>
 
-                {/* Low Stock Products */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <h2 className="text-lg font-bold text-slate-900 mb-4">Low Stock Products</h2>
                     <div className="space-y-3">

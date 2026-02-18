@@ -7,17 +7,17 @@ import {
     analyzeProductPerformance
 } from '../services/ml_service.js';
 
-// GET /api/intelligence/forecast?period=30d&metric=revenue
+
 export const getForecast = async (req, res) => {
     try {
         const { period = '30d', metric = 'revenue' } = req.query;
 
-        // Parse period
+        
         const daysBack = parseInt(period.replace('d', ''));
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - daysBack);
 
-        // Fetch historical data
+        
         const { data: orders } = await supabase
             .from('orders')
             .select('created_at, total_amount')
@@ -32,7 +32,7 @@ export const getForecast = async (req, res) => {
             });
         }
 
-        // Group by date
+        
         const dailyData = {};
         orders.forEach(order => {
             const date = order.created_at.split('T')[0];
@@ -48,7 +48,7 @@ export const getForecast = async (req, res) => {
             value: metric === 'revenue' ? day.revenue : day.orders
         }));
 
-        // Generate forecast for next 30 days
+        
         const forecast = forecastSales(historicalData, 30);
 
         res.json({
@@ -63,10 +63,10 @@ export const getForecast = async (req, res) => {
     }
 };
 
-// GET /api/intelligence/seasonal-trends
+
 export const getSeasonalTrends = async (req, res) => {
     try {
-        // Fetch last 12 months of data
+        
         const oneYearAgo = new Date();
         oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
@@ -83,7 +83,7 @@ export const getSeasonalTrends = async (req, res) => {
             });
         }
 
-        // Group by month
+        
         const monthlyData = {};
         orders.forEach(order => {
             const date = new Date(order.created_at);
@@ -109,10 +109,10 @@ export const getSeasonalTrends = async (req, res) => {
     }
 };
 
-// GET /api/intelligence/customer-segments
+
 export const getCustomerSegments = async (req, res) => {
     try {
-        // Fetch all customers with their order data
+        
         const { data: customers } = await supabase
             .from('users')
             .select(`
@@ -128,7 +128,7 @@ export const getCustomerSegments = async (req, res) => {
             return res.json({ segments: [], summary: {} });
         }
 
-        // Prepare data for segmentation
+        
         const customerData = customers.map(customer => {
             const completedOrders = customer.orders?.filter(o => o.status !== 'cancelled') || [];
             const lastOrder = completedOrders.sort((a, b) =>
@@ -143,12 +143,12 @@ export const getCustomerSegments = async (req, res) => {
                 totalOrders: completedOrders.length,
                 totalRevenue: completedOrders.reduce((sum, o) => sum + parseFloat(o.total_amount), 0)
             };
-        }).filter(c => c.totalOrders > 0); // Only customers with orders
+        }).filter(c => c.totalOrders > 0); 
 
-        // Perform RFM segmentation
+        
         const segmented = segmentCustomers(customerData);
 
-        // Save to database
+        
         for (const customer of segmented) {
             await supabase
                 .from('customer_segments')
@@ -166,7 +166,7 @@ export const getCustomerSegments = async (req, res) => {
                 }, { onConflict: 'user_id' });
         }
 
-        // Calculate summary
+        
         const summary = {
             champions: segmented.filter(c => c.segment === 'champions').length,
             loyal: segmented.filter(c => c.segment === 'loyal').length,
@@ -185,7 +185,7 @@ export const getCustomerSegments = async (req, res) => {
     }
 };
 
-// GET /api/intelligence/churn-risk
+
 export const getChurnRisk = async (req, res) => {
     try {
         const { data: atRiskCustomers } = await supabase
@@ -227,10 +227,10 @@ export const getChurnRisk = async (req, res) => {
     }
 };
 
-// GET /api/intelligence/inventory-optimization
+
 export const getInventoryOptimization = async (req, res) => {
     try {
-        // Fetch products with recent sales data
+        
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -251,7 +251,7 @@ export const getInventoryOptimization = async (req, res) => {
         const recommendations = [];
 
         for (const product of products) {
-            // Calculate daily sales for last 30 days
+            
             const completedOrders = product.order_items?.filter(item =>
                 item.orders?.status !== 'cancelled' &&
                 new Date(item.orders?.created_at) >= thirtyDaysAgo
@@ -259,7 +259,7 @@ export const getInventoryOptimization = async (req, res) => {
 
             if (completedOrders.length === 0) continue;
 
-            // Group by date
+            
             const dailySalesMap = {};
             completedOrders.forEach(item => {
                 const date = item.orders.created_at.split('T')[0];
@@ -268,9 +268,9 @@ export const getInventoryOptimization = async (req, res) => {
 
             const dailySales = Object.values(dailySalesMap);
 
-            if (dailySales.length < 7) continue; // Need at least 7 days
+            if (dailySales.length < 7) continue; 
 
-            // Calculate optimization
+            
             const optimization = optimizeInventory({
                 dailySales,
                 currentStock: product.stock_quantity || 0
@@ -284,7 +284,7 @@ export const getInventoryOptimization = async (req, res) => {
                     ...optimization
                 });
 
-                // Save to database
+                
                 await supabase
                     .from('inventory_recommendations')
                     .upsert({
@@ -300,7 +300,7 @@ export const getInventoryOptimization = async (req, res) => {
             }
         }
 
-        // Sort by urgency
+        
         const sorted = recommendations.sort((a, b) => {
             const priority = { urgent_reorder: 0, reorder_soon: 1, optimal: 2, overstocked: 3 };
             return priority[a.action] - priority[b.action];
@@ -313,10 +313,10 @@ export const getInventoryOptimization = async (req, res) => {
     }
 };
 
-// GET /api/intelligence/product-insights
+
 export const getProductInsights = async (req, res) => {
     try {
-        // Fetch products with sales data from current and previous period
+        
         const now = new Date();
         const thirtyDaysAgo = new Date(now);
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -342,7 +342,7 @@ export const getProductInsights = async (req, res) => {
                 item.orders?.status !== 'cancelled'
             ) || [];
 
-            // Current period (last 30 days)
+            
             const currentPeriodItems = completedItems.filter(item =>
                 new Date(item.orders.created_at) >= thirtyDaysAgo
             );
@@ -350,7 +350,7 @@ export const getProductInsights = async (req, res) => {
                 sum + (item.quantity * parseFloat(item.price)), 0
             );
 
-            // Previous period (30-60 days ago)
+            
             const previousPeriodItems = completedItems.filter(item => {
                 const date = new Date(item.orders.created_at);
                 return date >= sixtyDaysAgo && date < thirtyDaysAgo;
@@ -359,7 +359,7 @@ export const getProductInsights = async (req, res) => {
                 sum + (item.quantity * parseFloat(item.price)), 0
             );
 
-            // Assume 70% profit margin (you can adjust or fetch from product table)
+            
             const revenue = currentPeriodSales;
             const cost = revenue * 0.3;
 

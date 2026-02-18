@@ -38,7 +38,7 @@ export function SizeSelectorModal({
     const [isAdding, setIsAdding] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // Combine imageUrl and imageUrls, removing duplicates and empty strings
+    
     const allImages = Array.from(new Set([imageUrl, ...imageUrls])).filter(Boolean) as string[];
     const displayImages = allImages.length > 0 ? allImages : ["/images/tyres/default.jpg"];
 
@@ -98,7 +98,7 @@ export function SizeSelectorModal({
                         <X className="w-5 h-5" />
                     </button>
 
-                    {/* Left: Product Info */}
+                    {}
                     <div className="flex-1 p-10 md:p-16 flex flex-col justify-center bg-white order-2 md:order-1">
                         <div className="space-y-6">
                             <div>
@@ -167,7 +167,7 @@ export function SizeSelectorModal({
                         </div>
                     </div>
 
-                    {/* Right: Image Carousel */}
+                    {}
                     <div className="flex-1 bg-slate-50/50 relative flex items-center justify-center p-12 overflow-hidden min-h-[400px] order-1 md:order-2">
 
                         <div className="relative w-full h-full flex items-center justify-center">

@@ -64,7 +64,7 @@ export function ComparisonPage() {
                     </div>
                 </td>
             ))}
-            {/* Fill empty columns if less than 4 items */}
+            {}
             {Array.from({ length: 4 - selectedProducts.length }).map((_, i) => (
                 <td key={i} className="py-6 px-4 w-1/4"></td>
             ))}
@@ -139,7 +139,7 @@ export function ComparisonPage() {
                                                 </button>
                                             </th>
                                         ))}
-                                        {/* Empty columns */}
+                                        {}
                                         {Array.from({ length: 4 - selectedProducts.length }).map((_, i) => (
                                             <th key={i} className="py-10 px-4 w-1/4">
                                                 <div className="h-full border-2 border-dashed border-slate-100 rounded-3xl flex flex-col items-center justify-center p-8 text-center gap-4 bg-slate-50/30">
@@ -194,7 +194,7 @@ export function ComparisonPage() {
                                         )}
                                     />
 
-                                    {/* Action Row */}
+                                    {}
                                     <tr className="bg-slate-50/30">
                                         <td className="py-10 pr-8"></td>
                                         {selectedProducts.map((product: any) => (
@@ -212,7 +212,7 @@ export function ComparisonPage() {
                                                 </button>
                                             </td>
                                         ))}
-                                        {/* Empty columns */}
+                                        {}
                                         {Array.from({ length: 4 - selectedProducts.length }).map((_, i) => (
                                             <td key={i} className="py-10 px-4"></td>
                                         ))}

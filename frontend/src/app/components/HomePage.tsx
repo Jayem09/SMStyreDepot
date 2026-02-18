@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { StructuredData } from "./StructuredData";
 import { ArrowRight, CheckCircle2, Star, Shield, Truck, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollAnimation } from "./ui/ScrollAnimation";
@@ -33,7 +33,7 @@ interface Review {
 
 export function HomePage() {
   useDocumentTitle("Premium Tyres & Magwheels");
-  // Original static content as default
+  
   const defaultProduct: Product = {
     id: 0,
     name: "Michelin Pilot Sport 5",
@@ -104,18 +104,18 @@ export function HomePage() {
     setCurrentIndex((prev) => (prev - 1 + featuredProducts.length) % featuredProducts.length);
   };
 
-  // Helper to determine features list based on product data availability
+  
   const getProductFeatures = (product: Product) => {
-    if (!product) return []; // Guard clause
+    if (!product) return []; 
     if (product.id === 0) {
-      // Return original static features for default product
+      
       return [
         "Dynamic Response Technology",
         "MaxTouch Construction",
         "Dual Sport Tread Design"
       ];
     }
-    // Return dynamic details for fetched products
+    
     return [
       `${product.brand} - ${product.type}`,
       `Size: ${product.size}`,
@@ -125,12 +125,12 @@ export function HomePage() {
 
   const currentProduct = featuredProducts[currentIndex];
 
-  if (!currentProduct) return null; // Safe guard for rendering
+  if (!currentProduct) return null; 
 
-  // Calculate product features for the *current* product to display
+  
   const currentProductFeatures = getProductFeatures(currentProduct);
 
-  // Features data
+  
   const features = [
     {
       icon: Shield,
@@ -154,11 +154,14 @@ export function HomePage() {
       <SEO
         title="SMS Tyre Depot | Premium Tyres & Magwheels"
         description="The best collection of high-performance tyres and stylish magwheels in the Philippines. Professional fitting, balancing, and premium services."
+        preloadImages={[
+          currentProduct?.image_url || "https://images.unsplash.com/photo-1578844251758-2f71da645217?auto=format&fit=crop&w=1000&q=80"
+        ]}
       />
       <StructuredData type="LocalBusiness" data={{}} />
       <Header />
 
-      {/* Hero Section */}
+      {}
       <div className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-900">
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -219,7 +222,7 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Features Section */}
+      {}
       <div className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -245,7 +248,7 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Featured Product Showcase (Carousel) */}
+      {}
       <div
         className="py-24 bg-slate-900 text-white overflow-hidden relative"
         onMouseEnter={() => setIsAutoPlaying(true)}
@@ -300,7 +303,7 @@ export function HomePage() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Carousel Controls */}
+          {}
           {featuredProducts.length > 1 && (
             <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-4 mt-8 lg:-bottom-12 lg:mt-0">
               <button
@@ -331,7 +334,7 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Testimonials */}
+      {}
       <div className="py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           <ScrollAnimation variant="fade-up">
@@ -345,7 +348,7 @@ export function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {isLoadingReviews ? (
-              // Loading state skeletons
+              
               [1, 2, 3].map((i) => (
                 <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-64 animate-pulse flex flex-col gap-4">
                   <div className="h-4 bg-slate-100 rounded w-1/2"></div>
@@ -389,7 +392,7 @@ export function HomePage() {
                 </ScrollAnimation>
               ))
             ) : (
-              // Fallback if no reviews found
+              
               [1, 2, 3].map((i) => (
                 <ScrollAnimation
                   key={i}

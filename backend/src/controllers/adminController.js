@@ -2,32 +2,32 @@ import supabase from '../config/database.js';
 import { body, validationResult } from 'express-validator';
 import { sendOrderUpdateNotification } from '../services/pushNotificationService.js';
 
-// Dashboard Statistics
+
 export const getDashboardStats = async (req, res, next) => {
     try {
-        // Get total users
+        
         const { count: totalUsers } = await supabase
             .from('users')
             .select('*', { count: 'exact', head: true });
 
-        // Get total products
+        
         const { count: totalProducts } = await supabase
             .from('products')
             .select('*', { count: 'exact', head: true });
 
-        // Get total orders
+        
         const { count: totalOrders } = await supabase
             .from('orders')
             .select('*', { count: 'exact', head: true });
 
-        // Get total revenue (sum of all order totals)
+        
         const { data: orders } = await supabase
             .from('orders')
             .select('total');
 
         const totalRevenue = orders?.reduce((sum, order) => sum + parseFloat(order.total || 0), 0) || 0;
 
-        // Get recent orders (last 10)
+        
         const { data: recentOrders } = await supabase
             .from('orders')
             .select(`
@@ -40,7 +40,7 @@ export const getDashboardStats = async (req, res, next) => {
             .order('created_at', { ascending: false })
             .limit(10);
 
-        // Get low stock products (stock < 10)
+        
         const { data: lowStockProducts } = await supabase
             .from('products')
             .select('id, name, brand, stock')
@@ -48,7 +48,7 @@ export const getDashboardStats = async (req, res, next) => {
             .order('stock', { ascending: true })
             .limit(10);
 
-        // Get orders by status
+        
         const { data: ordersByStatus } = await supabase
             .from('orders')
             .select('status');
@@ -74,7 +74,7 @@ export const getDashboardStats = async (req, res, next) => {
     }
 };
 
-// Products Management
+
 export const getAdminProducts = async (req, res, next) => {
     try {
         const { page = 1, limit = 20, search, brand, type } = req.query;
@@ -129,7 +129,7 @@ export const createProduct = async (req, res, next) => {
 
         const { name, brand, size, type, price, description, image_url, image_urls, stock, is_featured } = req.body;
 
-        // Check for duplicates (same name, brand, and size - case insensitive)
+        
         const { data: existingProduct, error: checkError } = await supabase
             .from('products')
             .select('id')
@@ -183,7 +183,7 @@ export const updateProduct = async (req, res, next) => {
         const { id } = req.params;
         const { name, brand, size, type, price, description, image_url, image_urls, stock, is_featured } = req.body;
 
-        // Check for duplicates (same name, brand, and size - case insensitive, excluding current product)
+        
         const { data: existingProduct, error: checkError } = await supabase
             .from('products')
             .select('id')
@@ -252,7 +252,7 @@ export const deleteProduct = async (req, res, next) => {
     }
 };
 
-// Orders Management
+
 export const getAdminOrders = async (req, res, next) => {
     try {
         const { page = 1, limit = 20, status } = req.query;
@@ -362,15 +362,15 @@ export const updateOrderStatus = async (req, res, next) => {
             return res.status(404).json({ error: 'Order not found' });
         }
 
-        // Send push notification for status update
+        
         try {
             await sendOrderUpdateNotification(order.user_id, id, status);
         } catch (notifError) {
             console.error('Push notification error:', notifError);
-            // Don't fail the update if notification fails
+            
         }
 
-        // Trigger order status update email
+        
         import('../services/notificationService.js').then(({ sendOrderEmail }) => {
             sendOrderEmail(id, 'STATUS_UPDATE').catch(err => console.error('Email trigger error:', err));
         });
@@ -381,7 +381,7 @@ export const updateOrderStatus = async (req, res, next) => {
     }
 };
 
-// Users Management
+
 export const getAdminUsers = async (req, res, next) => {
     try {
         const { page = 1, limit = 20, search, role } = req.query;
@@ -456,7 +456,7 @@ export const updateUserRole = async (req, res, next) => {
     }
 };
 
-// Validation middleware
+
 export const validateProduct = [
     body('name').trim().notEmpty().withMessage('Name is required'),
     body('brand').trim().notEmpty().withMessage('Brand is required'),

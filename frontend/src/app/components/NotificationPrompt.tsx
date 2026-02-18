@@ -19,20 +19,20 @@ export function NotificationPrompt() {
     } = useNotificationStore();
 
     useEffect(() => {
-        // Check if notifications are supported
+        
         checkSupport();
 
-        // Initialize foreground listener
+        
         initializeForegroundListener();
     }, [checkSupport, initializeForegroundListener]);
 
     useEffect(() => {
-        // Show prompt if:
-        // 1. User is authenticated
-        // 2. Notifications are supported
-        // 3. Permission is default (not granted or denied)
-        // 4. Not already subscribed
-        // 5. User hasn't dismissed the prompt in this session
+        
+        
+        
+        
+        
+        
         const dismissed = sessionStorage.getItem('notification-prompt-dismissed');
 
         if (
@@ -42,7 +42,7 @@ export function NotificationPrompt() {
             !isSubscribed &&
             !dismissed
         ) {
-            // Show prompt after 2 seconds delay
+            
             const timer = setTimeout(() => {
                 setIsVisible(true);
             }, 2000);
@@ -80,7 +80,7 @@ export function NotificationPrompt() {
                 className="fixed bottom-6 right-6 z-50 max-w-sm"
             >
                 <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 relative">
-                    {/* Close button */}
+                    {}
                     <button
                         onClick={handleDismiss}
                         className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
@@ -88,12 +88,12 @@ export function NotificationPrompt() {
                         <X className="w-5 h-5" />
                     </button>
 
-                    {/* Icon */}
+                    {}
                     <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                         <Bell className="w-6 h-6 text-blue-600" />
                     </div>
 
-                    {/* Content */}
+                    {}
                     <h3 className="text-lg font-bold text-slate-900 mb-2">
                         Stay Updated!
                     </h3>
@@ -101,7 +101,7 @@ export function NotificationPrompt() {
                         Get instant notifications about your orders, exclusive deals, and new arrivals.
                     </p>
 
-                    {/* Actions */}
+                    {}
                     <div className="flex gap-3">
                         <button
                             onClick={handleEnable}

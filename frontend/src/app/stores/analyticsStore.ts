@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { apiClient } from '../utils/apiClient';
 
 interface OverviewStats {
     totalRevenue: number;
@@ -61,14 +62,14 @@ interface AnalyticsStore {
     loading: boolean;
     error: string | null;
 
-    fetchOverview: (token: string) => Promise<void>;
-    fetchSalesTimeline: (token: string, period?: string) => Promise<void>;
-    fetchBestSellers: (token: string, limit?: number) => Promise<void>;
-    fetchRevenueByBrand: (token: string) => Promise<void>;
-    fetchRevenueByCategory: (token: string) => Promise<void>;
-    fetchOrderStatusDistribution: (token: string) => Promise<void>;
-    fetchCustomerStats: (token: string) => Promise<void>;
-    fetchAll: (token: string, period?: string) => Promise<void>;
+    fetchOverview: () => Promise<void>;
+    fetchSalesTimeline: (period?: string) => Promise<void>;
+    fetchBestSellers: (limit?: number) => Promise<void>;
+    fetchRevenueByBrand: () => Promise<void>;
+    fetchRevenueByCategory: () => Promise<void>;
+    fetchOrderStatusDistribution: () => Promise<void>;
+    fetchCustomerStats: () => Promise<void>;
+    fetchAll: (period?: string) => Promise<void>;
 }
 
 export const useAnalyticsStore = create<AnalyticsStore>((set) => ({
@@ -83,108 +84,81 @@ export const useAnalyticsStore = create<AnalyticsStore>((set) => ({
     loading: false,
     error: null,
 
-    fetchOverview: async (token: string) => {
+    fetchOverview: async () => {
         try {
-            const response = await fetch('/api/analytics/overview', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch overview');
-            const data = await response.json();
+            const data = await apiClient.get<OverviewStats>('/api/analytics/overview');
             set({ overview: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchSalesTimeline: async (token: string, period = '30d') => {
+    fetchSalesTimeline: async (period = '30d') => {
         try {
-            const response = await fetch(`/api/analytics/sales-timeline?period=${period}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch sales timeline');
-            const data = await response.json();
+            const data = await apiClient.get<SalesData[]>('/api/analytics/sales-timeline', { params: { period } });
             set({ salesTimeline: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchBestSellers: async (token: string, limit = 10) => {
+    fetchBestSellers: async (limit = 10) => {
         try {
-            const response = await fetch(`/api/analytics/best-sellers?limit=${limit}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch best sellers');
-            const data = await response.json();
+            const data = await apiClient.get<BestSeller[]>('/api/analytics/best-sellers', { params: { limit: limit.toString() } });
             set({ bestSellers: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchRevenueByBrand: async (token: string) => {
+    fetchRevenueByBrand: async () => {
         try {
-            const response = await fetch('/api/analytics/revenue-by-brand', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch revenue by brand');
-            const data = await response.json();
+            const data = await apiClient.get<BrandRevenue[]>('/api/analytics/revenue-by-brand');
             set({ revenueByBrand: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchRevenueByCategory: async (token: string) => {
+    fetchRevenueByCategory: async () => {
         try {
-            const response = await fetch('/api/analytics/revenue-by-category', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch revenue by category');
-            const data = await response.json();
+            const data = await apiClient.get<CategoryRevenue[]>('/api/analytics/revenue-by-category');
             set({ revenueByCategory: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchOrderStatusDistribution: async (token: string) => {
+    fetchOrderStatusDistribution: async () => {
         try {
-            const response = await fetch('/api/analytics/order-status-distribution', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch order status distribution');
-            const data = await response.json();
+            const data = await apiClient.get<StatusCount[]>('/api/analytics/order-status-distribution');
             set({ orderStatusDistribution: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchCustomerStats: async (token: string) => {
+    fetchCustomerStats: async () => {
         try {
-            const response = await fetch('/api/analytics/customer-stats', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch customer stats');
-            const data = await response.json();
+            const data = await apiClient.get<CustomerStats>('/api/analytics/customer-stats');
             set({ customerStats: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchAll: async (token: string, period = '30d') => {
+    fetchAll: async (period = '30d') => {
         set({ loading: true, error: null });
         try {
+            const state = useAnalyticsStore.getState();
             await Promise.all([
-                useAnalyticsStore.getState().fetchOverview(token),
-                useAnalyticsStore.getState().fetchSalesTimeline(token, period),
-                useAnalyticsStore.getState().fetchBestSellers(token),
-                useAnalyticsStore.getState().fetchRevenueByBrand(token),
-                useAnalyticsStore.getState().fetchRevenueByCategory(token),
-                useAnalyticsStore.getState().fetchOrderStatusDistribution(token),
-                useAnalyticsStore.getState().fetchCustomerStats(token),
+                state.fetchOverview(),
+                state.fetchSalesTimeline(period),
+                state.fetchBestSellers(),
+                state.fetchRevenueByBrand(),
+                state.fetchRevenueByCategory(),
+                state.fetchOrderStatusDistribution(),
+                state.fetchCustomerStats(),
             ]);
         } catch (error: any) {
             set({ error: error.message });

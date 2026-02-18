@@ -56,7 +56,7 @@ export function ServicesPage() {
       />
       <Header />
 
-      {/* Hero Section */}
+      {}
       <div className="pt-40 pb-24 border-b border-slate-100">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
@@ -72,7 +72,7 @@ export function ServicesPage() {
       </div>
 
       <main className="flex-grow">
-        {/* Services Grid */}
+        {}
         <section className="py-24 container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {services.map((service, index) => (
@@ -110,7 +110,7 @@ export function ServicesPage() {
           </div>
         </section>
 
-        {/* Features Section */}
+        {}
         <section className="py-24 bg-slate-50 border-y border-slate-100">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">

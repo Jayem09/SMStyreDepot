@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-// All intelligence routes require admin authentication
+
 router.use(authenticate, requireAdmin);
 
 router.get('/forecast', getForecast);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { StructuredData } from "./StructuredData";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useParams, Link, useNavigate } from "react-router";
@@ -32,7 +32,7 @@ export function ProductDetailPage() {
     const product = id ? products.find((p) => p.id === Number(id)) : undefined;
     const variants = product ? products.filter(p => p.name === product.name && p.brand === product.brand) : [];
 
-    // Combine imageUrl and imageUrls
+    
     const allImages = product ? Array.from(new Set([product.image_url, ...(product.image_urls || [])])).filter(Boolean) as string[] : [];
     const displayImages = allImages.length > 0 ? allImages : ["/images/tyres/default.jpg"];
 
@@ -125,7 +125,7 @@ export function ProductDetailPage() {
             <main className="py-12 md:py-20 lg:py-32 bg-slate-50/50">
                 <div className="container mx-auto px-4 flex flex-col items-center">
 
-                    {/* Back Link */}
+                    {}
                     <div className="w-full max-w-5xl mb-8">
                         <Link
                             to="/products"
@@ -136,10 +136,10 @@ export function ProductDetailPage() {
                         </Link>
                     </div>
 
-                    {/* The "Modal" Design as a Page */}
+                    {}
                     <div className="relative w-full max-w-5xl bg-white rounded-xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.06)] overflow-hidden border border-slate-100 flex flex-col md:flex-row min-h-[600px] mb-20">
 
-                        {/* 1. Product Info (Exact match to SizeSelectorModal) */}
+                        {}
                         <div className="flex-1 p-10 md:p-16 flex flex-col justify-center bg-white order-2 md:order-1">
                             <div className="space-y-6">
                                 <div>
@@ -181,7 +181,7 @@ export function ProductDetailPage() {
 
                                 <div className="flex flex-col gap-4 max-w-sm pt-4">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {/* Variant Selection */}
+                                        {}
                                         <div className="relative group">
                                             <select
                                                 value={product.id}
@@ -199,7 +199,7 @@ export function ProductDetailPage() {
                                             </div>
                                         </div>
 
-                                        {/* Quantity Selector */}
+                                        {}
                                         <div className="flex h-14 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
                                             <button
                                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -234,7 +234,7 @@ export function ProductDetailPage() {
                                         )}
                                     </button>
 
-                                    {/* Wishlist Toggle */}
+                                    {}
                                     <button
                                         onClick={() => {
                                             if (!isAuthenticated) {
@@ -255,7 +255,7 @@ export function ProductDetailPage() {
                             </div>
                         </div>
 
-                        {/* 2. Image Carousel (Exact match to SizeSelectorModal) */}
+                        {}
                         <div className="flex-1 bg-slate-50/50 relative flex items-center justify-center p-12 overflow-hidden min-h-[400px] order-1 md:order-2">
 
                             <div className="relative w-full h-full flex items-center justify-center">
@@ -309,12 +309,12 @@ export function ProductDetailPage() {
                         </div>
                     </div>
 
-                    {/* Review Section */}
+                    {}
                     <div className="w-full max-w-5xl mb-20">
                         <ReviewSection productId={product.id} />
                     </div>
 
-                    {/* Related Products Section */}
+                    {}
                     {relatedProducts.length > 0 && (
                         <div className="w-full max-w-5xl mb-20">
                             <div className="flex items-center justify-between mb-8">

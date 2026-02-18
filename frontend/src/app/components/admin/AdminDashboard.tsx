@@ -54,7 +54,7 @@ export function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            {/* Mobile Header */}
+            {}
             <div className="lg:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between">
                 <h1 className="text-xl font-bold text-slate-900">Admin Panel</h1>
                 <button
@@ -66,19 +66,19 @@ export function AdminDashboard() {
             </div>
 
             <div className="flex">
-                {/* Sidebar */}
+                {}
                 <aside
                     className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"
                         } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transition-transform duration-300 ease-in-out`}
                 >
                     <div className="h-full flex flex-col">
-                        {/* Logo/Header */}
+                        {}
                         <div className="p-6 border-b border-slate-200">
                             <h2 className="text-2xl font-bold text-slate-900">Admin Panel</h2>
                             <p className="text-sm text-slate-500 mt-1">SMS Tyre Depot</p>
                         </div>
 
-                        {/* Navigation */}
+                        {}
                         <nav className="flex-1 p-4 space-y-2">
                             {menuItems.map((item) => {
                                 const Icon = item.icon;
@@ -101,7 +101,7 @@ export function AdminDashboard() {
                             })}
                         </nav>
 
-                        {/* User Info & Logout */}
+                        {}
                         <div className="p-4 border-t border-slate-200">
                             <div className="mb-3 px-4 py-2 bg-slate-50 rounded-lg">
                                 <p className="text-sm font-medium text-slate-900">{user?.name}</p>
@@ -118,7 +118,7 @@ export function AdminDashboard() {
                     </div>
                 </aside>
 
-                {/* Overlay for mobile */}
+                {}
                 {sidebarOpen && (
                     <div
                         className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -126,7 +126,7 @@ export function AdminDashboard() {
                     />
                 )}
 
-                {/* Main Content */}
+                {}
                 <main className="flex-1 p-4 lg:p-8">
                     {activePage === "dashboard" && <AdminStats />}
                     {activePage === "analytics" && <AdminAnalytics />}

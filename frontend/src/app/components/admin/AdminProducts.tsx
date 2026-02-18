@@ -66,7 +66,7 @@ export function AdminProducts() {
 
     const fetchProducts = async () => {
         try {
-            // Fetch all products for client-side filtering
+            
             const response = await fetch("/api/admin/products?limit=1000", {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -118,7 +118,7 @@ export function AdminProducts() {
     const handleEdit = (product: Product) => {
         setEditingProduct(product);
 
-        // Ensure image_url is included in previews if image_urls is empty
+        
         let urls = product.image_urls || [];
         if (urls.length === 0 && product.image_url) {
             urls = [product.image_url];
@@ -127,7 +127,7 @@ export function AdminProducts() {
         setFormData({
             name: product.name,
             brand: product.brand,
-            size: product.size?.trim() || "", // Trim to ensure matching
+            size: product.size?.trim() || "", 
             type: product.type,
             price: product.price.toString(),
             description: product.description || "",
@@ -192,13 +192,13 @@ export function AdminProducts() {
         const filesToProcess = files.slice(0, remainingSlots);
 
         filesToProcess.forEach(file => {
-            // Validate file type
+            
             if (!file.type.startsWith("image/")) {
                 toast.error(`${file.name} is not an image`);
                 return;
             }
 
-            // Validate file size (max 5MB)
+            
             if (file.size > 5 * 1024 * 1024) {
                 toast.error(`${file.name} is too large (max 5MB)`);
                 return;
@@ -212,7 +212,7 @@ export function AdminProducts() {
                     setFormData(fd => ({
                         ...fd,
                         image_urls: next,
-                        image_url: next[0] || "" // Primary image is the first one
+                        image_url: next[0] || "" 
                     }));
                     return next;
                 });
@@ -265,7 +265,7 @@ export function AdminProducts() {
                 </button>
             </div>
 
-            {/* Search */}
+            {}
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -277,7 +277,7 @@ export function AdminProducts() {
                 />
             </div>
 
-            {/* Products Table */}
+            {}
             {loading ? (
                 <div className="text-center py-12">Loading products...</div>
             ) : (
@@ -346,7 +346,7 @@ export function AdminProducts() {
                 </div>
             )}
 
-            {/* Modal */}
+            {}
             {showModal && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300">
                     <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">

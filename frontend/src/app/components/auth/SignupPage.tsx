@@ -39,7 +39,7 @@ export function SignupPage() {
         e.preventDefault();
         setError("");
 
-        // Validation
+        
         if (!acceptTerms) {
             setError("Please accept the Terms of Service and Privacy Policy");
             return;
@@ -71,7 +71,7 @@ export function SignupPage() {
                 }),
             });
 
-            // Check if response is ok before trying to parse JSON
+            
             let data;
             try {
                 data = await response.json();
@@ -80,7 +80,7 @@ export function SignupPage() {
             }
 
             if (!response.ok) {
-                // Handle validation errors
+                
                 if (data.errors && Array.isArray(data.errors)) {
                     const errorMessages = data.errors.map((err: any) => err.msg || err.message).join(", ");
                     throw new Error(errorMessages || data.error || "Registration failed");
@@ -88,16 +88,16 @@ export function SignupPage() {
                 throw new Error(data.error || `Registration failed: ${response.statusText}`);
             }
 
-            // Show success toast
+            
             toast.success("Account created successfully!", {
                 description: "Welcome! You can now login to your account.",
                 duration: 4000,
             });
 
-            // Auto-login the user
+            
             login(data.user, data.token);
 
-            // Redirect to home page after signup
+            
             navigate("/");
         } catch (err: any) {
             let errorMessage = "Registration failed. Please try again.";
@@ -124,7 +124,7 @@ export function SignupPage() {
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
             <div className="w-full max-w-md">
-                {/* Logo/Icon */}
+                {}
                 <div className="text-center mb-10">
                     <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 mx-auto mb-4 flex items-center justify-center">
                         <User className="w-6 h-6 text-blue-600" />
@@ -133,7 +133,7 @@ export function SignupPage() {
                     <p className="text-slate-500 text-sm mt-1">Join us today and get exclusive access</p>
                 </div>
 
-                {/* Card */}
+                {}
                 <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
                     {error && (
                         <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-medium">
@@ -142,7 +142,7 @@ export function SignupPage() {
                     )}
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 gap-6">
-                            {/* Full Name */}
+                            {}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
                                     Full Name
@@ -160,7 +160,7 @@ export function SignupPage() {
                                 </div>
                             </div>
 
-                            {/* Email */}
+                            {}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
                                     Email Address
@@ -178,7 +178,7 @@ export function SignupPage() {
                                 </div>
                             </div>
 
-                            {/* Password */}
+                            {}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
                                     Password
@@ -202,7 +202,7 @@ export function SignupPage() {
                                     </button>
                                 </div>
 
-                                {/* Password Strength Indicator */}
+                                {}
                                 {formData.password && (
                                     <div className="pt-2 px-1">
                                         <div className="flex gap-1.5 mb-2">
@@ -227,7 +227,7 @@ export function SignupPage() {
                                 )}
                             </div>
 
-                            {/* Confirm Password */}
+                            {}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
                                     Confirm Password
@@ -253,7 +253,7 @@ export function SignupPage() {
                             </div>
                         </div>
 
-                        {/* Terms & Conditions */}
+                        {}
                         <label className="flex items-start gap-3 cursor-pointer group px-1">
                             <div className="relative flex items-center mt-0.5">
                                 <input
@@ -269,7 +269,7 @@ export function SignupPage() {
                             </span>
                         </label>
 
-                        {/* Sign Up Button */}
+                        {}
                         <button
                             type="submit"
                             disabled={loading}

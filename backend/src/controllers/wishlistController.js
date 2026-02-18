@@ -1,8 +1,6 @@
 import supabase from '../config/database.js';
 
-/**
- * Toggle a product in user's wishlist (Add if not exists, remove if exists)
- */
+
 export const toggleWishlist = async (req, res, next) => {
     try {
         const { productId } = req.body;
@@ -14,7 +12,7 @@ export const toggleWishlist = async (req, res, next) => {
 
         console.log(`[Wishlist] Toggling product ${productId} for user ${userId}`);
 
-        // Check if item already exists in wishlist
+        
         const { data: existing, error: fetchError } = await supabase
             .from('wishlist')
             .select('id')
@@ -28,7 +26,7 @@ export const toggleWishlist = async (req, res, next) => {
         }
 
         if (existing) {
-            // Remove from wishlist
+            
             const { error: deleteError } = await supabase
                 .from('wishlist')
                 .delete()
@@ -45,7 +43,7 @@ export const toggleWishlist = async (req, res, next) => {
                 productId
             });
         } else {
-            // Add to wishlist
+            
             const { error: insertError } = await supabase
                 .from('wishlist')
                 .insert({
@@ -74,9 +72,7 @@ export const toggleWishlist = async (req, res, next) => {
     }
 };
 
-/**
- * Get all products in user's wishlist
- */
+
 export const getWishlist = async (req, res, next) => {
     try {
         const userId = req.user.id;
@@ -101,8 +97,8 @@ export const getWishlist = async (req, res, next) => {
             return res.json({ wishlist: [] });
         }
 
-        // Flatten the structure to return an array of products
-        // Filter out cases where product might be null (e.g. deleted product)
+        
+        
         const products = wishlistItems
             .filter(item => item.product !== null)
             .map(item => ({

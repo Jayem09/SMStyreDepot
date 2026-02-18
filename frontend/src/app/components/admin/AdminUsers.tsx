@@ -68,7 +68,7 @@ export function AdminUsers() {
                 <p className="text-slate-500 mt-1">Manage user accounts and permissions</p>
             </div>
 
-            {/* Filters */}
+            {}
             <div className="flex gap-4">
                 <div className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -91,7 +91,7 @@ export function AdminUsers() {
                 </select>
             </div>
 
-            {/* Users Table */}
+            {}
             {loading ? (
                 <div className="text-center py-12">Loading users...</div>
             ) : (

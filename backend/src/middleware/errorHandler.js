@@ -1,7 +1,7 @@
 export const errorHandler = (err, req, res, next) => {
   console.error('Error:', err);
 
-  // Validation errors
+  
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       error: 'Validation error',
@@ -9,7 +9,7 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Fetch/Network errors (Supabase connection issues)
+  
   if (err.message && err.message.includes('fetch failed')) {
     return res.status(500).json({
       error: 'Database connection failed',
@@ -17,7 +17,7 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Database errors
+  
   if (err.code === 'SQLITE_CONSTRAINT') {
     return res.status(400).json({
       error: 'Database constraint error',
@@ -25,7 +25,7 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Default error
+  
   res.status(err.status || 500).json({
     error: err.message || 'Internal server error',
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack })

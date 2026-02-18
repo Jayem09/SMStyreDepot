@@ -15,7 +15,7 @@ export function Header() {
   const { user, isAuthenticated, isAdmin, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -43,7 +43,7 @@ export function Header() {
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4">
-        {/* Top Bar */}
+        {}
         <div className="flex items-center justify-between py-3">
           <Link to="/" className="flex items-center gap-2">
             <img
@@ -53,7 +53,7 @@ export function Header() {
             />
           </Link>
 
-          {/* Desktop Search */}
+          {}
           <div className="hidden md:flex flex-1 max-w-2xl mx-8">
             <div className="relative w-full">
               <input
@@ -66,9 +66,9 @@ export function Header() {
             </div>
           </div>
 
-          {/* Cart + Login + Mobile Menu */}
+          {}
           <div className="flex items-center gap-3">
-            {/* Cart */}
+            {}
             <Link
               to="/cart"
               className="relative p-2 hover:bg-slate-50 rounded-lg transition-colors"
@@ -81,7 +81,7 @@ export function Header() {
               )}
             </Link>
 
-            {/* User Menu / Login */}
+            {}
             {isAuthenticated && user ? (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -160,7 +160,7 @@ export function Header() {
               </Link>
             )}
 
-            {/* Mobile Menu Toggle */}
+            {}
             <button
               className="md:hidden p-2 hover:bg-slate-50 rounded-lg transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -170,7 +170,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {}
         <nav className="hidden md:block border-t border-slate-100">
           <ul className="flex items-center gap-8 py-3 text-sm">
             <li>
@@ -236,7 +236,7 @@ export function Header() {
           </ul>
         </nav>
 
-        {/* Mobile Menu */}
+        {}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-slate-200">
             <div className="mb-4">

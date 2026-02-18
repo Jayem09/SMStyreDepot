@@ -1,16 +1,10 @@
 import { getMessaging, isFirebaseConfigured } from '../config/firebase-config.js';
 import supabase from '../config/database.js';
 
-/**
- * Subscribe a user to push notifications
- * @param {number} userId - User ID
- * @param {string} fcmToken - Firebase Cloud Messaging token
- * @param {object} deviceInfo - Device/browser information
- * @returns {Promise<object>} Subscription record
- */
+
 export async function subscribeToPushNotifications(userId, fcmToken, deviceInfo = {}) {
     try {
-        // Check if token already exists for this user
+        
         const { data: existing, error: selectError } = await supabase
             .from('push_subscriptions')
             .select('*')
@@ -20,7 +14,7 @@ export async function subscribeToPushNotifications(userId, fcmToken, deviceInfo 
         if (selectError) throw selectError;
 
         if (existing && existing.length > 0) {
-            // Update existing subscription
+            
             const { data, error } = await supabase
                 .from('push_subscriptions')
                 .update({
@@ -35,7 +29,7 @@ export async function subscribeToPushNotifications(userId, fcmToken, deviceInfo 
             return data;
         }
 
-        // Insert new subscription
+        
         const { data, error } = await supabase
             .from('push_subscriptions')
             .insert({
@@ -56,11 +50,7 @@ export async function subscribeToPushNotifications(userId, fcmToken, deviceInfo 
     }
 }
 
-/**
- * Unsubscribe a user from push notifications
- * @param {number} userId - User ID
- * @returns {Promise<boolean>} Success status
- */
+
 export async function unsubscribeFromPushNotifications(userId) {
     try {
         const { error } = await supabase
@@ -78,11 +68,7 @@ export async function unsubscribeFromPushNotifications(userId) {
     }
 }
 
-/**
- * Get all FCM tokens for a specific user
- * @param {number} userId - User ID
- * @returns {Promise<string[]>} Array of FCM tokens
- */
+
 export async function getUserTokens(userId) {
     try {
         const { data, error } = await supabase
@@ -99,10 +85,7 @@ export async function getUserTokens(userId) {
     }
 }
 
-/**
- * Get all FCM tokens (for broadcast)
- * @returns {Promise<string[]>} Array of all FCM tokens
- */
+
 export async function getAllTokens() {
     try {
         const { data, error } = await supabase
@@ -118,12 +101,7 @@ export async function getAllTokens() {
     }
 }
 
-/**
- * Send push notification to specific user
- * @param {number} userId - User ID
- * @param {object} notification - Notification payload {title, body, link}
- * @returns {Promise<object>} Send result
- */
+
 export async function sendNotificationToUser(userId, notification) {
     if (!isFirebaseConfigured()) {
         console.warn('⚠️  Firebase not configured. Skipping notification.');
@@ -145,12 +123,7 @@ export async function sendNotificationToUser(userId, notification) {
     }
 }
 
-/**
- * Send push notification to multiple tokens
- * @param {string[]} tokens - Array of FCM tokens
- * @param {object} notification - Notification payload {title, body, link, icon, badge}
- * @returns {Promise<object>} Send result
- */
+
 export async function sendBulkNotification(tokens, notification) {
     if (!isFirebaseConfigured()) {
         console.warn('⚠️  Firebase not configured. Skipping notification.');
@@ -177,14 +150,14 @@ export async function sendBulkNotification(tokens, notification) {
                 ...(notification.link && { link: notification.link }),
                 timestamp: Date.now().toString(),
             },
-            tokens: tokens.slice(0, 500), // FCM limit: 500 tokens per request
+            tokens: tokens.slice(0, 500), 
         };
 
         const response = await messaging.sendEachForMulticast(message);
 
         console.log(`✅ Sent ${response.successCount} notifications, ${response.failureCount} failed`);
 
-        // Remove invalid tokens
+        
         if (response.failureCount > 0) {
             const invalidTokens = [];
             response.responses.forEach((resp, idx) => {
@@ -194,7 +167,7 @@ export async function sendBulkNotification(tokens, notification) {
                 }
             });
 
-            // Clean up invalid tokens from database
+            
             if (invalidTokens.length > 0) {
                 await cleanupInvalidTokens(invalidTokens);
             }
@@ -211,13 +184,7 @@ export async function sendBulkNotification(tokens, notification) {
     }
 }
 
-/**
- * Send order update notification
- * @param {number} userId - User ID
- * @param {number} orderId - Order ID
- * @param {string} status - Order status
- * @returns {Promise<object>} Send result
- */
+
 export async function sendOrderUpdateNotification(userId, orderId, status) {
     const statusMessages = {
         confirmed: {
@@ -252,13 +219,7 @@ export async function sendOrderUpdateNotification(userId, orderId, status) {
     return await sendNotificationToUser(userId, notification);
 }
 
-/**
- * Send promotional notification to all users
- * @param {string} title - Notification title
- * @param {string} body - Notification body
- * @param {string} link - Optional link
- * @returns {Promise<object>} Send result
- */
+
 export async function sendPromotionalNotification(title, body, link = null) {
     const tokens = await getAllTokens();
 
@@ -273,7 +234,7 @@ export async function sendPromotionalNotification(title, body, link = null) {
         link: link || '/products',
     };
 
-    // Send in batches of 500 (FCM limit)
+    
     const results = [];
     for (let i = 0; i < tokens.length; i += 500) {
         const batch = tokens.slice(i, i + 500);
@@ -293,12 +254,7 @@ export async function sendPromotionalNotification(title, body, link = null) {
     };
 }
 
-/**
- * Send inventory alert notification
- * @param {number} userId - User ID
- * @param {string} productName - Product name
- * @returns {Promise<object>} Send result
- */
+
 export async function sendInventoryAlertNotification(userId, productName) {
     const notification = {
         title: '🎉 Back in Stock!',
@@ -309,10 +265,7 @@ export async function sendInventoryAlertNotification(userId, productName) {
     return await sendNotificationToUser(userId, notification);
 }
 
-/**
- * Clean up invalid FCM tokens from database
- * @param {string[]} invalidTokens - Array of invalid tokens
- */
+
 async function cleanupInvalidTokens(invalidTokens) {
     try {
         if (invalidTokens.length === 0) return;

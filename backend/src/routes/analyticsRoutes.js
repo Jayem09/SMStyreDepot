@@ -12,7 +12,7 @@ import {
 
 const router = express.Router();
 
-// All analytics routes require admin authentication
+
 router.use(authenticate, requireAdmin);
 
 router.get('/overview', getOverview);

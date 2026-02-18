@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { apiClient } from '../utils/apiClient';
 
 interface ForecastData {
     date: string;
@@ -68,39 +69,39 @@ interface ProductInsight {
 }
 
 interface IntelligenceStore {
-    // Forecast
+    
     forecast: ForecastData[];
     historical: HistoricalData[];
     forecastMetric: string;
     forecastPeriod: string;
 
-    // Seasonal Trends
+    
     seasonalTrends: SeasonalTrend | null;
 
-    // Customer Segments
+    
     customerSegments: CustomerSegment[];
     segmentSummary: Record<string, number>;
 
-    // Churn Risk
+    
     churnRiskCustomers: ChurnRiskCustomer[];
 
-    // Inventory
+    
     inventoryRecommendations: InventoryRecommendation[];
 
-    // Product Insights
+    
     productInsights: ProductInsight[];
 
     loading: boolean;
     error: string | null;
 
-    // Actions
-    fetchForecast: (token: string, period?: string, metric?: string) => Promise<void>;
-    fetchSeasonalTrends: (token: string) => Promise<void>;
-    fetchCustomerSegments: (token: string) => Promise<void>;
-    fetchChurnRisk: (token: string) => Promise<void>;
-    fetchInventoryOptimization: (token: string) => Promise<void>;
-    fetchProductInsights: (token: string) => Promise<void>;
-    fetchAll: (token: string) => Promise<void>;
+    
+    fetchForecast: (period?: string, metric?: string) => Promise<void>;
+    fetchSeasonalTrends: () => Promise<void>;
+    fetchCustomerSegments: () => Promise<void>;
+    fetchChurnRisk: () => Promise<void>;
+    fetchInventoryOptimization: () => Promise<void>;
+    fetchProductInsights: () => Promise<void>;
+    fetchAll: () => Promise<void>;
 }
 
 export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
@@ -117,13 +118,9 @@ export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
     loading: false,
     error: null,
 
-    fetchForecast: async (token: string, period = '30d', metric = 'revenue') => {
+    fetchForecast: async (period = '30d', metric = 'revenue') => {
         try {
-            const response = await fetch(`/api/intelligence/forecast?period=${period}&metric=${metric}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch forecast');
-            const data = await response.json();
+            const data = await apiClient.get<any>('/api/intelligence/forecast', { params: { period, metric } });
             set({
                 forecast: data.forecast || [],
                 historical: data.historical || [],
@@ -135,26 +132,18 @@ export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
         }
     },
 
-    fetchSeasonalTrends: async (token: string) => {
+    fetchSeasonalTrends: async () => {
         try {
-            const response = await fetch('/api/intelligence/seasonal-trends', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch seasonal trends');
-            const data = await response.json();
+            const data = await apiClient.get<SeasonalTrend>('/api/intelligence/seasonal-trends');
             set({ seasonalTrends: data });
         } catch (error: any) {
             set({ error: error.message });
         }
     },
 
-    fetchCustomerSegments: async (token: string) => {
+    fetchCustomerSegments: async () => {
         try {
-            const response = await fetch('/api/intelligence/customer-segments', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch customer segments');
-            const data = await response.json();
+            const data = await apiClient.get<any>('/api/intelligence/customer-segments');
             set({
                 customerSegments: data.segments || [],
                 segmentSummary: data.summary || {}
@@ -164,55 +153,44 @@ export const useIntelligenceStore = create<IntelligenceStore>((set) => ({
         }
     },
 
-    fetchChurnRisk: async (token: string) => {
+    fetchChurnRisk: async () => {
         try {
-            const response = await fetch('/api/intelligence/churn-risk', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch churn risk');
-            const data = await response.json();
+            const data = await apiClient.get<ChurnRiskCustomer[]>('/api/intelligence/churn-risk');
             set({ churnRiskCustomers: Array.isArray(data) ? data : [] });
         } catch (error: any) {
             set({ error: error.message, churnRiskCustomers: [] });
         }
     },
 
-    fetchInventoryOptimization: async (token: string) => {
+    fetchInventoryOptimization: async () => {
         try {
-            const response = await fetch('/api/intelligence/inventory-optimization', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch inventory optimization');
-            const data = await response.json();
+            const data = await apiClient.get<InventoryRecommendation[]>('/api/intelligence/inventory-optimization');
             set({ inventoryRecommendations: Array.isArray(data) ? data : [] });
         } catch (error: any) {
             set({ error: error.message, inventoryRecommendations: [] });
         }
     },
 
-    fetchProductInsights: async (token: string) => {
+    fetchProductInsights: async () => {
         try {
-            const response = await fetch('/api/intelligence/product-insights', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (!response.ok) throw new Error('Failed to fetch product insights');
-            const data = await response.json();
+            const data = await apiClient.get<ProductInsight[]>('/api/intelligence/product-insights');
             set({ productInsights: Array.isArray(data) ? data : [] });
         } catch (error: any) {
             set({ error: error.message, productInsights: [] });
         }
     },
 
-    fetchAll: async (token: string) => {
+    fetchAll: async () => {
         set({ loading: true, error: null });
         try {
+            const state = useIntelligenceStore.getState();
             await Promise.all([
-                useIntelligenceStore.getState().fetchForecast(token),
-                useIntelligenceStore.getState().fetchSeasonalTrends(token),
-                useIntelligenceStore.getState().fetchCustomerSegments(token),
-                useIntelligenceStore.getState().fetchChurnRisk(token),
-                useIntelligenceStore.getState().fetchInventoryOptimization(token),
-                useIntelligenceStore.getState().fetchProductInsights(token),
+                state.fetchForecast(),
+                state.fetchSeasonalTrends(),
+                state.fetchCustomerSegments(),
+                state.fetchChurnRisk(),
+                state.fetchInventoryOptimization(),
+                state.fetchProductInsights(),
             ]);
         } catch (error: any) {
             set({ error: error.message });

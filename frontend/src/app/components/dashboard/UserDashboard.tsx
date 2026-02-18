@@ -28,7 +28,7 @@ export function UserDashboard() {
 
         fetchOrders();
 
-        // Polling every 30 seconds for real-time tracking
+        
         const pollInterval = setInterval(fetchOrders, 30000);
 
         return () => clearInterval(pollInterval);
@@ -88,7 +88,7 @@ export function UserDashboard() {
             <Header />
 
             <main className="container mx-auto px-4 py-12">
-                {/* Welcome Section */}
+                {}
                 <div className="bg-white border border-slate-200 rounded-lg p-8 mb-8">
                     <div className="flex items-center gap-6">
                         <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center border border-blue-100">
@@ -104,7 +104,7 @@ export function UserDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Quick Actions */}
+                    {}
                     <div className="lg:col-span-1">
                         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                             <h2 className="text-lg font-bold text-slate-900 mb-4">Quick Actions</h2>
@@ -151,7 +151,7 @@ export function UserDashboard() {
                         </div>
                     </div>
 
-                    {/* Recent Orders */}
+                    {}
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                             <div className="flex items-center justify-between mb-6">
@@ -218,7 +218,7 @@ export function UserDashboard() {
                                                 </div>
                                             </div>
 
-                                            {/* Real-time Tracking Stepper */}
+                                            {}
                                             <div className="pt-2 pb-4 border-t border-slate-50">
                                                 <div className="flex items-center justify-between mb-4">
                                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tracking Status</span>

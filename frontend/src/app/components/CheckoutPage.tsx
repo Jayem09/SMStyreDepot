@@ -27,7 +27,7 @@ export function CheckoutPage() {
     cardName: "",
     expiryDate: "",
     cvv: "",
-    paymentMethod: "gcash", // default
+    paymentMethod: "gcash", 
   });
 
   const cartItems = useCartStore((state) => state.items);
@@ -49,7 +49,7 @@ export function CheckoutPage() {
 
     setIsSubmitting(true);
     try {
-      // 1. Create the order in the database
+      
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
@@ -73,20 +73,20 @@ export function CheckoutPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Clear cart immediately
+        
         clearCart();
 
-        // 2. Handle redirection for PayMongo if checkout_url exists
+        
         if (data.checkout_url) {
           toast.info("Redirecting to secure payment...");
-          // Give the user a moment to see the toast
+          
           setTimeout(() => {
             window.location.href = data.checkout_url;
           }, 1500);
           return;
         }
 
-        // 3. For "Pay in Store" or success without redirect
+        
         setOrderId(data.order.id);
         setOrderPlaced(true);
         if (!data.checkout_url && formData.paymentMethod !== 'store') {
@@ -113,8 +113,8 @@ export function CheckoutPage() {
   };
 
   const subtotal = getTotalPrice();
-  const tax = subtotal * 0.12; // Adjusted for PH VAT 12%
-  const shipping = formData.paymentMethod === 'store' ? 0 : (cartItems.length > 0 ? 500 : 0); // Flat 500 PHP delivery or Free for store pickup
+  const tax = subtotal * 0.12; 
+  const shipping = formData.paymentMethod === 'store' ? 0 : (cartItems.length > 0 ? 500 : 0); 
   const total = subtotal + tax + shipping;
 
   if (orderPlaced) {
@@ -169,9 +169,9 @@ export function CheckoutPage() {
       <div className="container mx-auto px-4 py-8">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Checkout Form */}
+            {}
             <div className="lg:col-span-2 space-y-6">
-              {/* Contact Information */}
+              {}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <User className="w-5 h-5 text-blue-500" />
@@ -231,7 +231,7 @@ export function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Shipping Address */}
+              {}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-blue-500" />
@@ -287,7 +287,7 @@ export function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Information */}
+              {}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-blue-500" />
@@ -393,7 +393,7 @@ export function CheckoutPage() {
               </div>
             </div>
 
-            {/* Order Summary */}
+            {}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
                 <h2 className="text-xl font-semibold mb-6">Order Summary</h2>

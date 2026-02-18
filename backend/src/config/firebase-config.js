@@ -2,17 +2,14 @@ import admin from 'firebase-admin';
 
 let firebaseApp = null;
 
-/**
- * Initialize Firebase Admin SDK
- * This is used for server-side push notification sending
- */
+
 function initializeFirebase() {
     if (firebaseApp) {
         return firebaseApp;
     }
 
     try {
-        // Check if Firebase credentials are provided
+        
         const projectId = process.env.FIREBASE_PROJECT_ID;
         const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
         const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -39,9 +36,7 @@ function initializeFirebase() {
     }
 }
 
-/**
- * Get Firebase Messaging instance
- */
+
 function getMessaging() {
     const app = initializeFirebase();
     if (!app) {
@@ -50,9 +45,7 @@ function getMessaging() {
     return admin.messaging();
 }
 
-/**
- * Check if Firebase is properly configured
- */
+
 function isFirebaseConfigured() {
     return firebaseApp !== null || (
         process.env.FIREBASE_PROJECT_ID &&

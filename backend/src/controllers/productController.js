@@ -6,7 +6,7 @@ export const getProducts = async (req, res, next) => {
 
     let query = supabase.from('products').select('*');
 
-    // Apply filters
+    
     if (brand && brand !== 'All Brands') {
       query = query.eq('brand', brand);
     }
@@ -31,12 +31,12 @@ export const getProducts = async (req, res, next) => {
       query = query.lte('price', parseFloat(maxPrice));
     }
 
-    // Filter for featured products only
+    
     if (featured === 'true') {
       query = query.eq('is_featured', true);
     }
 
-    // Order by created_at descending
+    
     query = query.order('created_at', { ascending: false });
 
     const { data: products, error } = await query;
@@ -65,7 +65,7 @@ export const getProduct = async (req, res, next) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Get reviews count and average rating
+    
     const { data: reviews, error: reviewsError } = await supabase
       .from('reviews')
       .select('rating')
@@ -96,7 +96,7 @@ export const getBrands = async (req, res, next) => {
       throw error;
     }
 
-    // Group by brand and count
+    
     const brandMap = {};
     products.forEach(product => {
       if (brandMap[product.brand]) {
@@ -127,7 +127,7 @@ export const searchProducts = async (req, res, next) => {
 
     const searchTerm = `%${q}%`;
 
-    // Supabase doesn't support complex ORDER BY with CASE, so we'll do a simpler search
+    
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
@@ -138,7 +138,7 @@ export const searchProducts = async (req, res, next) => {
       throw error;
     }
 
-    // Sort by relevance (name matches first, then brand)
+    
     const sortedProducts = (products || []).sort((a, b) => {
       const aNameMatch = a.name.toLowerCase().includes(q.toLowerCase());
       const bNameMatch = b.name.toLowerCase().includes(q.toLowerCase());
@@ -162,7 +162,7 @@ export const getRelatedProducts = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // 1. Get current product details
+    
     const { data: product, error: productError } = await supabase
       .from('products')
       .select('brand, size')
@@ -173,8 +173,8 @@ export const getRelatedProducts = async (req, res, next) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // 2. Fetch products with same size OR brand, excluding current product
-    // We prioritize size matches in our logic later
+    
+    
     const { data: related, error: relatedError } = await supabase
       .from('products')
       .select('*')
@@ -186,7 +186,7 @@ export const getRelatedProducts = async (req, res, next) => {
       throw relatedError;
     }
 
-    // 3. Sort by relevance: Size matches first, then brand matches
+    
     const sortedRelated = (related || []).sort((a, b) => {
       const aSizeMatch = a.size === product.size;
       const bSizeMatch = b.size === product.size;
@@ -194,7 +194,7 @@ export const getRelatedProducts = async (req, res, next) => {
       if (aSizeMatch && !bSizeMatch) return -1;
       if (!aSizeMatch && bSizeMatch) return 1;
       return 0;
-    }).slice(0, 5); // Limit to top 5
+    }).slice(0, 5); 
 
     res.json({ products: sortedRelated });
   } catch (error) {

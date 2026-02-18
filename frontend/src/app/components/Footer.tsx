@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="bg-slate-900 text-white mt-16">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About */}
+          {}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-blue-500">About Us</h3>
             <p className="text-slate-400 text-sm mb-4">
@@ -24,7 +24,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-blue-500">Quick Links</h3>
             <ul className="space-y-2 text-sm text-slate-400">
@@ -36,7 +36,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Info */}
+          {}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-blue-500">Contact Info</h3>
             <ul className="space-y-3 text-sm text-slate-400">
@@ -55,7 +55,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Opening Hours */}
+          {}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-blue-500">Opening Hours</h3>
             <ul className="space-y-2 text-sm text-slate-400">
@@ -71,7 +71,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {}
         <div className="border-t border-slate-800 mt-8 pt-6 text-center text-sm text-slate-400">
           <p>&copy; {new Date().getFullYear()} SMS Tyre Depot. All rights reserved.</p>
         </div>

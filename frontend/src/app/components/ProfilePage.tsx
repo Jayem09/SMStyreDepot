@@ -132,7 +132,7 @@ export function ProfilePage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Sidebar */}
+                        {}
                         <div className="md:col-span-1 space-y-4">
                             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm text-center">
                                 <div className="relative inline-block mb-4">
@@ -164,7 +164,7 @@ export function ProfilePage() {
                             </nav>
                         </div>
 
-                        {/* Main Content */}
+                        {}
                         <div className="md:col-span-2">
                             <ScrollAnimation variant="fade-up">
                                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -249,7 +249,7 @@ export function ProfilePage() {
                                 </div>
                             </ScrollAnimation>
 
-                            {/* Notification Preferences */}
+                            {}
                             <ScrollAnimation variant="fade-up" delay={0.1}>
                                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mt-8">
                                     <div className="p-8 border-b border-slate-100">
@@ -258,7 +258,7 @@ export function ProfilePage() {
                                     </div>
 
                                     <div className="p-8 space-y-6">
-                                        {/* Enable/Disable Notifications */}
+                                        {}
                                         <div className="flex items-center justify-between p-6 bg-slate-50 rounded-xl border border-slate-100">
                                             <div className="flex items-center gap-4">
                                                 {isSubscribed ? (
@@ -299,7 +299,7 @@ export function ProfilePage() {
                                             </button>
                                         </div>
 
-                                        {/* Info */}
+                                        {}
                                         <div className="text-xs text-slate-400 space-y-1">
                                             <p>• You'll receive notifications for order updates, promotions, and special offers</p>
                                             <p>• You can disable notifications anytime from this page</p>

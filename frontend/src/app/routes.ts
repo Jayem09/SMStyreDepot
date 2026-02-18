@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { lazy } from "react";
 
-// Lazy load all route components for code splitting
+
 const HomePage = lazy(() => import("../app/components/HomePage").then(m => ({ default: m.HomePage })));
 const ProductsPage = lazy(() => import("../app/components/ProductsPage").then(m => ({ default: m.ProductsPage })));
 const CartPage = lazy(() => import("../app/components/CartPage").then(m => ({ default: m.CartPage })));

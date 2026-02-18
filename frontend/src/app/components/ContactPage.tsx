@@ -44,7 +44,7 @@ export function ContactPage() {
       />
       <Header />
 
-      {/* Hero Section - Matching ServicesPage */}
+      {}
       <div className="pt-40 pb-24 border-b border-slate-100">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
@@ -60,7 +60,7 @@ export function ContactPage() {
       </div>
 
       <main className="flex-grow">
-        {/* Branches Grid - Matching ServicesPage */}
+        {}
         <section className="py-24 container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {branches.map((branch, index) => (
@@ -71,7 +71,7 @@ export function ContactPage() {
                 className="h-full"
               >
                 <div className="group bg-white flex flex-col h-full border border-slate-100 rounded-2xl overflow-hidden shadow-sm transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1">
-                  {/* Map Preview */}
+                  {}
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <iframe
                       title={branch.name}
@@ -81,7 +81,7 @@ export function ContactPage() {
                     />
                   </div>
 
-                  {/* Branch Info */}
+                  {}
                   <div className="p-8 flex flex-col flex-grow">
                     <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">
                       {branch.name}
@@ -90,7 +90,7 @@ export function ContactPage() {
                       {branch.description}
                     </p>
 
-                    {/* Contact Details */}
+                    {}
                     <div className="space-y-4 pt-6 border-t border-slate-100">
                       <div className="flex items-start gap-3">
                         <MapPin className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />

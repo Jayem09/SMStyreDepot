@@ -52,7 +52,7 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
             });
 
             if (response.ok) {
-                // Refresh reviews for this product
+                
                 await get().fetchProductReviews(productId);
                 return true;
             }

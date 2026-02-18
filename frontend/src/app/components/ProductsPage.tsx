@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { ShoppingCart, Filter, Loader2, BarChart2, Heart } from "lucide-react";
+import { ShoppingCart, Filter, BarChart2, Heart } from "lucide-react";
 import { useCartStore } from "../stores/cartStore";
 import { useProductStore } from "../stores/productStore";
 import { useComparisonStore } from "../stores/comparisonStore";
@@ -17,6 +17,7 @@ import { SmartFinder } from "./SmartFinder";
 import { SizeSelectorModal } from "./ui/SizeSelectorModal";
 import { ComparisonBar } from "./ComparisonBar";
 import { RatingStars } from "./ui/RatingStars";
+import { GridSkeleton } from "./ui/SkeletonLoaders";
 
 
 interface Product {
@@ -51,12 +52,12 @@ export function ProductsPage() {
   const [selectedType, setSelectedType] = useState("All Types");
   const [sortBy, setSortBy] = useState("default");
 
-  // Pagination State
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20; // 5 rows * 4 columns = 20 items
+  const itemsPerPage = 20; 
   const productGridRef = useRef<HTMLDivElement>(null);
 
-  // Modal State
+  
   const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
   const [modalProduct, setModalProduct] = useState<{
     name: string;
@@ -72,7 +73,7 @@ export function ProductsPage() {
   const setFilters = useProductStore((state) => state.setFilters);
   const searchQuery = useProductStore((state) => state.searchQuery);
 
-  // Fetch products from API
+  
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -89,7 +90,7 @@ export function ProductsPage() {
       setProductsState(productList);
       setProducts(productList);
 
-      // Extract unique brands and sizes from products
+      
       const uniqueBrands = [...new Set(productList.map((p) => p.brand).filter(Boolean))] as string[];
       const uniqueSizes = [...new Set(productList.map((p) => p.size).filter(Boolean))] as string[];
 
@@ -103,14 +104,14 @@ export function ProductsPage() {
     }
   };
 
-  // Fetch wishlist if authenticated
+  
   useEffect(() => {
     if (isAuthenticated && token) {
       fetchWishlist(token);
     }
   }, [isAuthenticated, token, fetchWishlist]);
 
-  // Update filters in store
+  
   useEffect(() => {
     setFilters({ brand: selectedBrand, size: selectedSize, type: selectedType });
   }, [selectedBrand, selectedSize, selectedType, setFilters]);
@@ -126,15 +127,15 @@ export function ProductsPage() {
     return brandMatch && sizeMatch && typeMatch && searchMatch;
   });
 
-  // Reset to first page when filters change
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedBrand, selectedSize, selectedType, searchQuery]);
 
-  // Scroll to products when page changes
+  
   useEffect(() => {
     if (!loading && productGridRef.current && currentPage > 1) {
-      const offset = 100; // Account for fixed header
+      const offset = 100; 
       const elementPosition = productGridRef.current.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -145,14 +146,14 @@ export function ProductsPage() {
     }
   }, [currentPage, loading]);
 
-  // Sort logic
+  
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === "price-low") return a.price - b.price;
     if (sortBy === "price-high") return b.price - a.price;
-    return 0; // default
+    return 0; 
   });
 
-  // Grouping products by Name + Brand
+  
   const groupedProducts = sortedProducts.reduce((acc, product) => {
     const key = `${product.brand}-${product.name}`;
     if (!acc[key]) {
@@ -168,7 +169,7 @@ export function ProductsPage() {
 
   const displayProducts = Object.values(groupedProducts);
 
-  // Pagination Logic
+  
   const totalPages = Math.ceil(displayProducts.length / itemsPerPage);
   const paginatedProducts = displayProducts.slice(
     (currentPage - 1) * itemsPerPage,
@@ -223,7 +224,7 @@ export function ProductsPage() {
                 <p className="text-slate-600">Find the perfect fit for your vehicle</p>
               </div>
 
-              {/* Search Bar */}
+              {}
               <div className="relative w-full md:w-96">
                 <input
                   type="text"
@@ -247,7 +248,7 @@ export function ProductsPage() {
           <div className="flex flex-col lg:flex-row gap-8">
 
 
-            {/* Filters Sidebar */}
+            {}
             <aside className="w-full lg:w-64 flex-shrink-0 space-y-8">
               <ScrollAnimation variant="fade-in" delay={200}>
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
@@ -256,7 +257,7 @@ export function ProductsPage() {
                     <h2 className="font-bold text-slate-800">Filters</h2>
                   </div>
 
-                  {/* Brand Filter */}
+                  {}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Brand</label>
                     <select
@@ -272,7 +273,7 @@ export function ProductsPage() {
                     </select>
                   </div>
 
-                  {/* Size Filter */}
+                  {}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Tyre Size</label>
                     <select
@@ -288,7 +289,7 @@ export function ProductsPage() {
                     </select>
                   </div>
 
-                  {/* Type Filter */}
+                  {}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Type</label>
                     <div className="flex flex-wrap gap-2">
@@ -321,7 +322,7 @@ export function ProductsPage() {
               </ScrollAnimation>
             </aside>
 
-            {/* Product Grid */}
+            {}
             <div className="flex-1" ref={productGridRef}>
               <div className="mb-6 flex items-center justify-between">
                 <p className="text-slate-600 font-medium">
@@ -343,9 +344,8 @@ export function ProductsPage() {
               </div>
 
               {loading ? (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-                  <span className="ml-3 text-slate-600">Loading products...</span>
+                <div className="py-4">
+                  <GridSkeleton count={8} />
                 </div>
               ) : (
 
@@ -376,7 +376,7 @@ export function ProductsPage() {
                               </div>
                             )}
 
-                            {/* Comparison Toggle */}
+                            {}
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
@@ -405,7 +405,7 @@ export function ProductsPage() {
                               </div>
                             </button>
 
-                            {/* Wishlist Toggle */}
+                            {}
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
@@ -465,7 +465,7 @@ export function ProductsPage() {
                 </div>
               )}
 
-              {/* Pagination Controls */}
+              {}
               {!loading && totalPages > 1 && (
                 <div className="flex justify-center items-center mt-12 gap-2">
                   <button
