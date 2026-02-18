@@ -113,9 +113,7 @@ export function CheckoutPage() {
   };
 
   const subtotal = getTotalPrice();
-  const tax = subtotal * 0.12; 
-  const shipping = formData.paymentMethod === 'store' ? 0 : (cartItems.length > 0 ? 500 : 0); 
-  const total = subtotal + tax + shipping;
+  const total = subtotal;
 
   if (orderPlaced) {
     return (
@@ -401,14 +399,6 @@ export function CheckoutPage() {
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal ({cartItems.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
                     <span>₱{subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-600">
-                    <span>Tax</span>
-                    <span>₱{tax.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-600">
-                    <span>Shipping</span>
-                    <span>₱{shipping.toFixed(2)}</span>
                   </div>
                   <div className="border-t border-slate-200 pt-3">
                     <div className="flex justify-between text-xl font-bold">
