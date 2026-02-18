@@ -1,14 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useCartStore } from './cartStore';
+import { supabase } from '../config/supabaseClient';
+import { Provider } from '@supabase/supabase-js';
 
 export interface User {
-    id: number;
+    id: number | string;
     email: string;
     name: string;
     phone?: string;
     role?: 'user' | 'admin';
     created_at?: string;
+    avatar_url?: string;
 }
 
 interface AuthStore {
@@ -19,6 +22,8 @@ interface AuthStore {
     login: (user: User, token: string) => void;
     logout: () => void;
     updateUser: (user: Partial<User>) => void;
+    signInWithSocial: (provider: Provider) => Promise<void>;
+    checkSession: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -36,7 +41,9 @@ export const useAuthStore = create<AuthStore>()(
                     isAdmin: user.role === 'admin',
                 });
             },
-            logout: () => {
+            logout: async () => {
+                const { error } = await supabase.auth.signOut();
+                if (error) console.error('Error signing out from Supabase:', error);
                 
                 useCartStore.getState().clearCart();
 
@@ -51,6 +58,33 @@ export const useAuthStore = create<AuthStore>()(
                 set((state) => ({
                     user: state.user ? { ...state.user, ...userData } : null,
                 }));
+            },
+            signInWithSocial: async (provider) => {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider,
+                    options: {
+                        redirectTo: `${window.location.origin}/login`,
+                    }
+                });
+                if (error) throw error;
+            },
+            checkSession: async () => {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const user = session.user;
+                    set({
+                        user: {
+                            id: user.id,
+                            email: user.email || '',
+                            name: user.user_metadata.full_name || user.email?.split('@')[0] || 'User',
+                            avatar_url: user.user_metadata.avatar_url,
+                            role: 'user', 
+                        },
+                        token: session.access_token,
+                        isAuthenticated: true,
+                        isAdmin: false, 
+                    });
+                }
             },
         }),
         {

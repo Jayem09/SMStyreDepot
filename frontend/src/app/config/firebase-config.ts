@@ -27,6 +27,10 @@ export async function initializeMessaging() {
         }
 
         if (!messaging) {
+            if (!('PushManager' in window)) {
+                console.warn('⚠️ PushManager not supported, skipping full Messaging initialization');
+                return null;
+            }
             messaging = getMessaging(app);
             console.log('✅ Firebase Messaging initialized');
         }
@@ -59,7 +63,11 @@ export async function requestNotificationToken(): Promise<string | null> {
             return null;
         }
 
-        
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.warn('⚠️  Push notifications are not supported in this browser environment');
+            return null;
+        }
+
         const swConfigParams = new URLSearchParams({
             apiKey: firebaseConfig.apiKey || '',
             authDomain: firebaseConfig.authDomain || '',
@@ -69,22 +77,30 @@ export async function requestNotificationToken(): Promise<string | null> {
             appId: firebaseConfig.appId || '',
             measurementId: firebaseConfig.measurementId || ''
         }).toString();
-        await navigator.serviceWorker.register(
-            `/firebase-messaging-sw.js?${swConfigParams}`
-        );
-        const registration = await navigator.serviceWorker.ready;
 
-        if (!registration.pushManager) {
-            console.error('❌ Push Manager not available on registration. Browser might not support Push API in this context.');
+        try {
+            await navigator.serviceWorker.register(
+                `/firebase-messaging-sw.js?${swConfigParams}`
+            );
+
+            const registration = await navigator.serviceWorker.ready;
+
+            if (!registration || !registration.pushManager) {
+                console.error('❌ Push Manager not available on registration.');
+                return null;
+            }
+
+            const token = await getToken(messagingInstance, {
+                vapidKey,
+                serviceWorkerRegistration: registration
+            });
+
+            console.log('✅ FCM token obtained');
+            return token;
+        } catch (swError) {
+            console.error('Service worker/Push error:', swError);
             return null;
         }
-        const token = await getToken(messagingInstance, {
-            vapidKey,
-            serviceWorkerRegistration: registration
-        });
-
-        console.log('✅ FCM token obtained with custom registration');
-        return token;
     } catch (error) {
         console.error('Error getting FCM token:', error);
         return null;

@@ -138,6 +138,8 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
 
     
     initializeForegroundListener: () => {
+        if (typeof window === 'undefined' || !('PushManager' in window)) return;
+        
         onForegroundMessage((payload) => {
             console.log('📬 Foreground notification:', payload);
 

@@ -9,28 +9,53 @@ export const authenticate = async (req, res, next) => {
       return res.status(401).json({ error: 'No token provided' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let userId;
+    let isSupabaseToken = false;
+
+    try {
+      
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      userId = decoded.userId;
+    } catch (jwtError) {
+      
+      const { data: { user }, error: supabaseError } = await supabase.auth.getUser(token);
+      
+      if (supabaseError || !user) {
+        throw new Error('Invalid token');
+      }
+      userId = user.id;
+      isSupabaseToken = true;
+    }
 
     
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('id, email, name, phone, role')
-      .eq('id', decoded.userId)
-      .single();
+    const query = supabase.from('users').select('id, email, name, phone, role');
+    
+    if (isSupabaseToken) {
+      query.eq('auth_id', userId);
+    } else {
+      query.eq('id', userId);
+    }
+
+    const { data: user, error } = await query.single();
 
     if (error || !user) {
+      
+      if (isSupabaseToken) {
+        return res.status(401).json({ error: 'User not synchronized. Please try logging in again.' });
+      }
       return res.status(401).json({ error: 'User not found' });
     }
 
     req.user = user;
     next();
   } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
+    if (error.message === 'Invalid token' || error.name === 'JsonWebTokenError') {
       return res.status(401).json({ error: 'Invalid token' });
     }
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Token expired' });
     }
+    console.error('Auth Middleware Error:', error);
     res.status(500).json({ error: 'Authentication error' });
   }
 };
@@ -55,15 +80,30 @@ export const optionalAuth = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const { data: user } = await supabase
-        .from('users')
-        .select('id, email, name, phone, role')
-        .eq('id', decoded.userId)
-        .single();
+      let userId;
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.userId;
+      } catch (e) {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) userId = user.id;
+      }
 
-      if (user) {
-        req.user = user;
+      if (userId) {
+        let query = supabase.from('users').select('id, email, name, phone, role');
+        
+        if (userId.toString().includes('-')) {
+          
+          query = query.eq('auth_id', userId);
+        } else {
+          query = query.eq('id', userId);
+        }
+
+        const { data: user } = await query.single();
+
+        if (user) {
+          req.user = user;
+        }
       }
     }
     next();

@@ -1,6 +1,6 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { ArrowRight, Wrench, ShieldCheck, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ScrollAnimation } from "./ui/ScrollAnimation";

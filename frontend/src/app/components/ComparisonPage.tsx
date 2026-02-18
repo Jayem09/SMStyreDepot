@@ -1,6 +1,6 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { useComparisonStore } from '../stores/comparisonStore';
 import { useCartStore } from '../stores/cartStore';
 import { ImageWithFallback } from './figma/ImageWithFallback';

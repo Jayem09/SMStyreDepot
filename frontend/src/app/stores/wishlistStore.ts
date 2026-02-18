@@ -31,7 +31,7 @@ export const useWishlistStore = create<WishlistState>((set, get) => ({
     loading: false,
     error: null,
 
-    fetchWishlist: async () => {
+    fetchWishlist: async (_token?: string) => {
         set({ loading: true, error: null });
         try {
             const data = await apiClient.get<{ wishlist: Product[] }>('/api/wishlist');

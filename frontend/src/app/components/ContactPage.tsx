@@ -1,6 +1,6 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { ScrollAnimation } from "./ui/ScrollAnimation";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";

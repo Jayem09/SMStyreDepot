@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { useWishlistStore } from "../stores/wishlistStore";
 import { useAuthStore } from "../stores/authStore";
 import { useCartStore } from "../stores/cartStore";

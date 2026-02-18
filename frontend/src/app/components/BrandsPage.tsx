@@ -1,6 +1,6 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { SEO } from "./SEO";
+import { SEO } from "./common/SEO";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../stores/productStore";
