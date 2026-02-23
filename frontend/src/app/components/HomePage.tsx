@@ -222,10 +222,10 @@ export function HomePage() {
         </div>
       </div>
 
-      {}
-      <div className="py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+      {/* Features Section */}
+      <div className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
             {features.map((feature, index) => (
               <ScrollAnimation
                 key={index}
@@ -233,14 +233,16 @@ export function HomePage() {
                 delay={index * 100}
                 className="h-full"
               >
-                <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-100 transition-colors h-full">
-                  <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-6 shadow-sm border border-slate-100">
-                    <feature.icon className="w-7 h-7 text-blue-600" />
+                <div className="group flex flex-row md:flex-col items-start gap-4 md:gap-6 p-6 md:p-8 rounded-2xl bg-white border border-slate-100/50 hover:border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full">
+                  <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 bg-blue-50/50 group-hover:bg-blue-50 rounded-2xl flex items-center justify-center transition-colors duration-300">
+                    <feature.icon className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
-                  <p className="text-slate-600 leading-relaxed">
-                    {feature.description}
-                  </p>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-2 md:mb-3">{feature.title}</h3>
+                    <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
               </ScrollAnimation>
             ))}

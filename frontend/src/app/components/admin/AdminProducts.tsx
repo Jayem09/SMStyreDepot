@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "../../stores/authStore";
-import { Plus, Edit, Trash2, Search, X, ImageIcon } from "lucide-react";
+import { Plus, Edit, Trash2, Search, X, ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Product {
@@ -26,6 +26,7 @@ export function AdminProducts() {
     const [search, setSearch] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [availableSizes, setAvailableSizes] = useState<{ id: number; size_value: string }[]>([]);
@@ -83,6 +84,7 @@ export function AdminProducts() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSaving(true);
         try {
             const url = editingProduct
                 ? `/api/admin/products/${editingProduct.id}`
@@ -112,6 +114,8 @@ export function AdminProducts() {
         } catch (error: any) {
             console.error("Error saving product:", error);
             toast.error(error.message || "Failed to save product");
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -150,12 +154,15 @@ export function AdminProducts() {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (!response.ok) throw new Error("Failed to delete product");
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.message || errorData?.error || "Failed to delete product");
+            }
             fetchProducts();
             toast.success("Product deleted successfully");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error deleting product:", error);
-            toast.error("Failed to delete product");
+            toast.error(error.message || "Failed to delete product");
         }
     };
 
@@ -365,12 +372,29 @@ export function AdminProducts() {
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        {isSaving && (
+                            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[2px] rounded-xl flex-col gap-3">
+                                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+                                <p className="text-sm font-semibold text-slate-700 animate-pulse">Saving Product...</p>
+                            </div>
+                        )}
+                        <form onSubmit={handleSubmit} className={`p-6 space-y-4 ${isSaving ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <datalist id="existing-names">
+                                {Array.from(new Set(products.map(p => p.name))).sort().map(name => (
+                                    <option key={name} value={name} />
+                                ))}
+                            </datalist>
+                            <datalist id="existing-brands">
+                                {Array.from(new Set(products.map(p => p.brand))).sort().map(brand => (
+                                    <option key={brand} value={brand} />
+                                ))}
+                            </datalist>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
                                     <input
                                         type="text"
+                                        list="existing-names"
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -381,6 +405,7 @@ export function AdminProducts() {
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Brand</label>
                                     <input
                                         type="text"
+                                        list="existing-brands"
                                         required
                                         value={formData.brand}
                                         onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
@@ -418,7 +443,6 @@ export function AdminProducts() {
                                         <option value="Summer">Summer</option>
                                         <option value="Winter">Winter</option>
                                         <option value="All-Season">All-Season</option>
-                                        <option value="All Season">All Season</option>
                                         <option value="Off-Road">Off-Road</option>
                                     </select>
                                 </div>
@@ -443,7 +467,7 @@ export function AdminProducts() {
                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
-                                <div>
+                                <div className="col-span-2">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Warranty Info</label>
                                     <input
                                         type="text"
@@ -512,7 +536,7 @@ export function AdminProducts() {
                                     Display as Featured Product on Homepage
                                 </label>
                             </div>
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -526,9 +550,11 @@ export function AdminProducts() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    disabled={isSaving}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
-                                    {editingProduct ? "Update" : "Create"}
+                                    {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+                                    {isSaving ? "Saving..." : editingProduct ? "Update" : "Create"}
                                 </button>
                             </div>
                         </form>

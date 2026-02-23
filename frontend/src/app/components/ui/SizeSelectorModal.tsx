@@ -122,9 +122,9 @@ export function SizeSelectorModal({
                                 </div>
                                 <div className="flex items-center gap-3 text-slate-700">
                                     <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0" />
-                                    <span className="text-sm font-semibold italic">
-                                        Price: <span className="text-blue-600 font-bold">₱{selectedVariant ? selectedVariant.price.toLocaleString(undefined, { minimumFractionDigits: 2 }) : "?.???"}</span>
-                                    </span>
+                                    <div className="text-right">
+                                        Price: {selectedVariant ? <span className="text-blue-600 font-bold">₱{selectedVariant.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span> : <span className="text-slate-500 italic text-sm">(please select size)</span>}
+                                    </div>
                                 </div>
                             </div>
 

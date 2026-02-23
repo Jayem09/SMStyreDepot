@@ -17,12 +17,20 @@ function AuthHandler() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
         checkSession().then(() => {
-          if (event === 'SIGNED_IN') {
+          if (event === 'SIGNED_IN' && window.location.hash.includes('access_token')) {
             const name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'back';
-            toast.success(`Welcome, ${name}!`);
+            // Show explicit success message for social login / magic link flows
+            toast.success(`Successfully connected to your account!`, {
+              description: `Welcome back, ${name}`,
+              duration: 3000,
+            });
           }
+          
           if (window.location.pathname === '/login' || window.location.hash.includes('access_token')) {
-            window.location.href = '/';
+            // Delay redirect so user sees the success message
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 1500);
           }
         });
       } else if (event === 'SIGNED_OUT') {

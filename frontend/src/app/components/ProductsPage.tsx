@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { SEO } from "./common/SEO";
+import { StructuredData } from "./StructuredData";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ShoppingCart, Filter, BarChart2, Heart } from "lucide-react";
 import { useCartStore } from "../stores/cartStore";
@@ -212,6 +213,14 @@ export function ProductsPage() {
       <SEO
         title="Shop Tyres & Magwheels"
         description="Browse our extensive collection of premium tyres and magwheels. Filter by brand, size, or type to find the perfect match for your vehicle."
+      />
+      <StructuredData
+        type="Organization"
+        data={{
+          "@type": "Organization",
+          "url": "https://smstyredepot.com/products",
+          "logo": "https://smstyredepot.com/logo.png"
+        }}
       />
       <Header />
 
@@ -441,7 +450,7 @@ export function ProductsPage() {
                               <span className="bg-slate-100 px-2 py-1 rounded">{product.type}</span>
                             </div>
 
-                            <div className="mt-auto flex items-end justify-between gap-2">
+                            <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                               <div>
                                 <p className="text-[10px] text-slate-500 mb-0.5">Starting at</p>
                                 <span className="text-lg font-bold text-slate-900 leading-tight">
@@ -452,9 +461,16 @@ export function ProductsPage() {
                               <button
                                 onClick={() => handleOpenSelector(product)}
                                 disabled={totalStock === 0}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg transition-all disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed shadow-sm hover:shadow-md font-bold text-[10px] flex items-center gap-1 shrink-0"
+                                className="w-full sm:w-auto justify-center bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg transition-all disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed shadow-sm hover:shadow-md font-bold text-[10px] flex items-center gap-1 shrink-0"
                               >
-                                {product.variants.length > 1 ? "SELECT OPTIONS" : <ShoppingCart className="w-3.5 h-3.5" />}
+                                {product.variants.length > 1 ? (
+                                  <>
+                                    <span className="hidden sm:inline">SELECT OPTIONS</span>
+                                    <span className="sm:hidden">SELECT</span>
+                                  </>
+                                ) : (
+                                  <ShoppingCart className="w-3.5 h-3.5" />
+                                )}
                               </button>
                             </div>
                           </div>

@@ -256,7 +256,7 @@ export function Header() {
                       className="block py-2 px-2 text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-lg transition-colors font-medium"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {["Home", "Shop Tyres", "Services", "Brands", "Contact", "Wishlist"][
+                      {["Home", "Products", "Services", "Brands", "Contact", "Wishlist"][
                         idx
                       ]}
                     </Link>

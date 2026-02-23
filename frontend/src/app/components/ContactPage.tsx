@@ -4,12 +4,13 @@ import { SEO } from "./common/SEO";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { ScrollAnimation } from "./ui/ScrollAnimation";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { StructuredData } from "./StructuredData";
 
 
 const branches = [
   {
     name: "Mataas Na Lupa Lipa City",
-    description: "SMS Tyre Depot Lipa City has been serving the community since 1995, providing quality tyres and exceptional service.",
+    description: "SMS Tyre Depot Lipa City has been serving the community since 2005, providing quality tyres and exceptional service.",
     address: "W5V3+79P, J.M Katigbak St., Lipa City, 4217 Batangas",
     phone: "+63 917 706 0025",
     email: "smstyredepotlipa@gmail.com",
@@ -42,6 +43,7 @@ export function ContactPage() {
         title="Contact Us"
         description="Have questions about our tyres or services? Get in touch with SMS Tyre Depot. Our team is here to help you get back on the road safely."
       />
+      <StructuredData type="LocalBusiness" data={{}} />
       <Header />
 
       {}

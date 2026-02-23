@@ -256,3 +256,95 @@ const getOrderHTML = (order, items, type) => {
   </div>
 `;
 };
+
+export const sendPasswordResetEmail = async (email, token) => {
+  if (!resend) {
+    console.warn('⚠️  RESEND_API_KEY missing. Skipping password reset email.');
+    return { success: false, error: 'API Key missing' };
+  }
+
+  const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+  
+  // Force the primary domain in production to avoid .vercel.app links in emails
+  let baseUrl = process.env.FRONTEND_URL || 'https://smstyredepot.com';
+  
+  if (baseUrl.includes('.vercel.app')) {
+    baseUrl = 'https://smstyredepot.com';
+  }
+  
+  // Ensure no trailing slash
+  baseUrl = baseUrl.replace(/\/$/, '');
+  const resetLink = `${baseUrl}/reset-password?token=${token}`;
+  
+  try {
+    const { data, error } = await resend.emails.send({
+      from: `SMS Tyre Depot <${fromEmail}>`,
+      to: [email],
+      subject: 'Reset Your Password - SMS Tyre Depot',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <h2 style="color: #1e293b;">Reset Your Password</h2>
+          <p>You requested to reset your password. Click the button below to proceed:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" style="background-color: #2c2c2cff; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">Reset Password</a>
+          </div>
+          <p style="color: #64748b; font-size: 14px;">Or copy and paste this link into your browser:</p>
+          <p style="color: #64748b; font-size: 12px; word-break: break-all;">${resetLink}</p>
+          <p style="font-size: 14px; color: #475569; margin-top: 20px;">If you didn't request this, you can safely ignore this email.</p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+          <p style="font-size: 11px; color: #94a3b8; text-align: center;">Automated message from SMS Tyre Depot.</p>
+        </div>
+      `
+    });
+
+    if (error) {
+      console.error(' Resend API Error (Reset Password):', error);
+      return { success: false, error };
+    }
+
+    return { success: true, id: data?.id };
+  } catch (err) {
+    console.error('sendPasswordResetEmail Error:', err);
+    return { success: false, error: err.message };
+  }
+};
+
+export const sendLowStockAlert = async (product, currentStock) => {
+  if (!resend) {
+    console.warn('⚠️  RESEND_API_KEY missing. Skipping low stock email.');
+    return;
+  }
+
+  const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+  const ownerEmail = process.env.OWNER_EMAIL || 'johndinglasan12@gmail.com';
+
+  try {
+    console.log(`📉 Sending low stock alert for: ${product.name} (${currentStock} left)...`);
+
+    await resend.emails.send({
+      from: `SMS Tyre Depot <${fromEmail}>`,
+      to: [ownerEmail],
+      subject: `⚠️ Low Stock Alert: ${product.name}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <h2 style="color: #b91c1c;">Low Stock Alert</h2>
+          <p>The stock for the following product has dropped below the threshold:</p>
+          
+          <div style="background-color: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #fecaca;">
+            <p style="margin: 5px 0;"><strong>Product:</strong> ${product.brand} ${product.name}</p>
+            <p style="margin: 5px 0;"><strong>Size:</strong> ${product.size}</p>
+            <p style="margin: 5px 0; color: #b91c1c; font-weight: bold; font-size: 18px;">Remaining Stock: ${currentStock}</p>
+          </div>
+
+          <p>Please restock soon to ensure availability.</p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+          <p style="font-size: 11px; color: #94a3b8; text-align: center;">Automated message from SMS Tyre Depot System.</p>
+        </div>
+      `
+    });
+
+    console.log(`✅ Low stock alert sent to owner.`);
+  } catch (err) {
+    console.error('❌ sendLowStockAlert Error:', err);
+  }
+};

@@ -72,17 +72,47 @@ export const useAuthStore = create<AuthStore>()(
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     const user = session.user;
+
+                    // Call the backend API to get the real role (bypasses RLS)
+                    try {
+                        const response = await fetch('/api/auth/me', {
+                            headers: {
+                                Authorization: `Bearer ${session.access_token}`,
+                            },
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            const role = (data.user?.role as 'user' | 'admin') || 'user';
+                            set({
+                                user: {
+                                    id: user.id,
+                                    email: user.email || '',
+                                    name: data.user?.name || user.user_metadata.full_name || user.email?.split('@')[0] || 'User',
+                                    avatar_url: user.user_metadata.avatar_url,
+                                    role,
+                                },
+                                token: session.access_token,
+                                isAuthenticated: true,
+                                isAdmin: role === 'admin',
+                            });
+                            return;
+                        }
+                    } catch (err) {
+                        console.error('Failed to fetch user role from API:', err);
+                    }
+
+                    // Fallback: set without role if API call fails
                     set({
                         user: {
                             id: user.id,
                             email: user.email || '',
                             name: user.user_metadata.full_name || user.email?.split('@')[0] || 'User',
                             avatar_url: user.user_metadata.avatar_url,
-                            role: 'user', 
+                            role: 'user',
                         },
                         token: session.access_token,
                         isAuthenticated: true,
-                        isAdmin: false, 
+                        isAdmin: false,
                     });
                 }
             },

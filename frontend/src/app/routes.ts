@@ -21,6 +21,7 @@ const UserDashboard = lazy(() => import("./components/dashboard/UserDashboard").
 const OrdersPage = lazy(() => import("./components/OrdersPage").then(m => ({ default: m.OrdersPage })));
 const ProfilePage = lazy(() => import("./components/ProfilePage").then(m => ({ default: m.ProfilePage })));
 const WishlistPage = lazy(() => import("./components/WishlistPage").then(m => ({ default: m.WishlistPage })));
+const ResetPasswordPage = lazy(() => import("./components/ResetPasswordPage").then(m => ({ default: m.ResetPasswordPage })));
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
   {
     path: "/forgot-password",
     Component: ForgotPasswordPage,
+  },
+  {
+    path: "/reset-password",
+    Component: ResetPasswordPage,
   },
   {
     path: "/terms",

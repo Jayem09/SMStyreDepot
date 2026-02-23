@@ -43,17 +43,17 @@ export const handlePayMongoWebhook = async (req, res) => {
                     const { error } = await supabase
                         .from('orders')
                         .update({
-                            status: 'paid',
+                            status: 'processing',
                             updated_at: new Date().toISOString()
                         })
                         .eq('id', orderId);
 
                     if (error) {
-                        console.error(`❌ Failed to update order #${orderId} to paid:`, error);
+                        console.error(`Failed to update order #${orderId} to paid:`, error);
                         return res.status(500).json({ error: 'Database update failed' });
                     }
 
-                    console.log(`✅ Order #${orderId} marked as PAID via PayMongo webhook (${eventType}).`);
+                    console.log(`Order #${orderId} marked as PROCESSING via PayMongo webhook (${eventType}).`);
 
                     
                     const { data: orderData } = await supabase
@@ -65,7 +65,7 @@ export const handlePayMongoWebhook = async (req, res) => {
                     
                     if (orderData?.user_id) {
                         try {
-                            await sendOrderUpdateNotification(orderData.user_id, orderId, 'paid');
+                            await sendOrderUpdateNotification(orderData.user_id, orderId, 'processing');
                         } catch (notifError) {
                             console.error('Push notification error:', notifError);
                         }

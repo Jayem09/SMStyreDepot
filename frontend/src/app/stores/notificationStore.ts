@@ -13,7 +13,7 @@ interface NotificationState {
     
     checkSupport: () => Promise<void>;
     requestPermission: () => Promise<boolean>;
-    subscribeToNotifications: (token: string) => Promise<void>;
+    subscribeToNotifications: () => Promise<void>;
     unsubscribeFromNotifications: () => Promise<void>;
     initializeForegroundListener: () => void;
 }

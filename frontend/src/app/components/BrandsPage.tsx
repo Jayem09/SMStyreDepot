@@ -1,6 +1,7 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { SEO } from "./common/SEO";
+import { StructuredData } from "./StructuredData";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../stores/productStore";
@@ -72,6 +73,14 @@ export function BrandsPage() {
             <SEO
                 title="Premium Tyre Brands"
                 description="Explore our wide range of world-class tyre brands including Michelin, Bridgestone, Goodyear, Continental, and more."
+            />
+            <StructuredData 
+                type="Organization" 
+                data={{
+                    "@type": "Organization",
+                    "url": "https://smstyredepot.com/brands",
+                    "logo": "https://smstyredepot.com/logo.png"
+                }} 
             />
             <Header />
 

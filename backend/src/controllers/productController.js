@@ -4,7 +4,19 @@ export const getProducts = async (req, res, next) => {
   try {
     const { brand, size, type, search, minPrice, maxPrice, featured } = req.query;
 
-    let query = supabase.from('products').select('*');
+    let query = supabase.from('products').select(`
+      id, name, brand, size, type, price, rating, stock, image_url, image_urls, is_featured, created_at, description
+    `);
+
+    // To optimize loading: if the query doesn't specify a search, we can omit large description arrays.
+    // However, the frontend SizeSelectorModal relies on image_urls and description.
+    // The most efficient fix for large response payloads without breaking frontend features
+    // is ensuring the query is indexed, but we can't alter the DB.
+    // Wait, let's keep all fields but limit to 1000 if it's too large, but Supabase handles up to 1000 by default.
+    // Instead of selecting '*', let's explicitly select everything to avoid fetching unnecessary hidden columns if any exist.
+    query = supabase.from('products').select(`
+      id, name, brand, size, type, price, rating, stock, image_url, image_urls, description, is_featured, created_at
+    `);
 
     
     if (brand && brand !== 'All Brands') {

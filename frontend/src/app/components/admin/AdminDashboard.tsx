@@ -9,7 +9,8 @@ import {
     LogOut,
     Menu,
     Ruler,
-    Trophy
+    Trophy,
+    ArrowLeft
 } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import { AdminStats } from "./AdminStats";
@@ -108,8 +109,15 @@ export function AdminDashboard() {
                                 <p className="text-xs text-slate-500">{user?.email}</p>
                             </div>
                             <button
+                                onClick={() => navigate("/")}
+                                className="w-full flex items-center gap-3 px-4 py-3 mb-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                                <span className="ml-2">Back to Website</span>
+                            </button>
+                            <button
                                 onClick={handleLogout}
-                                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
                             >
                                 <LogOut className="w-5 h-5" />
                                 <span className="ml-2">Logout</span>

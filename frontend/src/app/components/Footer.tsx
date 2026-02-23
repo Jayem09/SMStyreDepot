@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-blue-500">About Us</h3>
             <p className="text-slate-400 text-sm mb-4">
-              SMS Tyre Depot has been serving the community since 1995, providing quality tyres and exceptional service.
+              SMS Tyre Depot has been serving the community since 2005, providing quality tyres and exceptional service.
             </p>
             <div className="flex gap-3">
               <a href="https://www.facebook.com/SMSTyreDepot.Official" className="bg-slate-800 p-2 rounded-lg hover:bg-blue-500 transition-colors">

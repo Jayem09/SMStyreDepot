@@ -1,6 +1,7 @@
 import supabase from '../config/database.js';
 import { body, validationResult } from 'express-validator';
 import { sendOrderUpdateNotification } from '../services/pushNotificationService.js';
+import { sendLowStockAlert } from '../services/notificationService.js';
 
 export const validateOrder = [
   body('shipping_address').trim().notEmpty().withMessage('Shipping address is required'),
@@ -114,12 +115,18 @@ export const createOrder = async (req, res, next) => {
       if (itemError) throw itemError;
 
       
+      const newStock = item.products.stock - item.quantity;
       const { error: stockError } = await supabase
         .from('products')
-        .update({ stock: item.products.stock - item.quantity })
+        .update({ stock: newStock })
         .eq('id', item.product_id);
 
       if (stockError) throw stockError;
+
+      // Check for low stock logic (Threshold: 5)
+      if (newStock <= 5) {
+        sendLowStockAlert(item.products, newStock).catch(err => console.error('Low stock alert error:', err));
+      }
     }));
 
     

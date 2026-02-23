@@ -6,7 +6,7 @@ import { useAuthStore } from '../stores/authStore';
 
 export function NotificationPrompt() {
     const [isVisible, setIsVisible] = useState(false);
-    const { isAuthenticated, token } = useAuthStore();
+    const { isAuthenticated } = useAuthStore();
     const {
         isSupported,
         permission,
@@ -51,16 +51,25 @@ export function NotificationPrompt() {
         }
     }, [isAuthenticated, isSupported, permission, isSubscribed]);
 
+    useEffect(() => {
+        if (permission === 'granted') {
+            setIsVisible(false);
+        }
+    }, [permission]);
+
     const handleEnable = async () => {
         try {
             const granted = await requestPermission();
 
-            if (granted && token) {
-                await subscribeToNotifications(token);
-                setIsVisible(false);
+            if (granted) {
+                await subscribeToNotifications();
+                // setIsVisible(false) handled by useEffect
             }
         } catch (error) {
             console.error('Failed to enable notifications:', error);
+            // Even if subscription fails, if permission is granted, we should probably hide the prompt
+            // or show an error. specific error handling depends on UX preference.
+            // For now, let's rely on the useEffect above to hide it if permission became 'granted'.
         }
     };
 

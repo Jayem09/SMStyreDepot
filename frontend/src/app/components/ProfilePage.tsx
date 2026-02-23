@@ -72,7 +72,7 @@ export function ProfilePage() {
             } else {
                 const granted = await requestPermission();
                 if (granted && token) {
-                    await subscribeToNotifications(token);
+                    await subscribeToNotifications();
                     toast.success("Notifications enabled!");
                 } else {
                     toast.error("Permission denied");

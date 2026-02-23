@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import compression from 'compression';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 
@@ -27,6 +28,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Enable gzip compression for faster payload delivery over slow networks
+app.use(compression());
 
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',

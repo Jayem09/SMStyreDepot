@@ -243,6 +243,13 @@ export const deleteProduct = async (req, res, next) => {
             .eq('id', id);
 
         if (error) {
+            // Handle foreign key constraint violations (e.g., product exists in order_items)
+            if (error.code === '23503') {
+                return res.status(400).json({
+                    error: 'Cannot Delete Product',
+                    message: 'This product cannot be deleted because it is associated with existing customer orders. You may want to set its stock to 0 instead.'
+                });
+            }
             throw error;
         }
 

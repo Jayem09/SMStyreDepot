@@ -32,7 +32,6 @@ export async function initializeMessaging() {
                 return null;
             }
             messaging = getMessaging(app);
-            console.log('✅ Firebase Messaging initialized');
         }
 
         return messaging;
